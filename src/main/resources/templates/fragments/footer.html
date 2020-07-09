@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+
+<footer th:fragment="footer">
+    <div class="footer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 footer-about wow fadeInUp animated" style="visibility: visible; animation-name: fadeInUp;">
+                    <img class="logo-footer" th:src="@{/images/templates/logo.png}" alt="logo-footer" data-at2x="assets/img/logo.png">
+                    <p>
+                        We are team 2 in CS545 - Web Application Architecture course. A young team always looking for new and creative ideas to make the amazing projects.
+                    </p>
+                </div>
+                <div class="col-md-4 offset-md-1 footer-contact wow fadeInDown animated" style="visibility: visible; animation-name: fadeInDown;">
+                    <h3>Our Team</h3>
+                    <p><i class="fa fa-user"></i> Chi Cuong Nguyen - 611.111</p>
+                    <p><i class="fa fa-user"></i> Tien Khanh Nguyen - 6xx.xxx</p>
+                    <p><i class="fa fa-user"></i> Eman Mohamed - 6xx.xxx</p>
+                    <p><i class="fa fa-user"></i> Elsabeth Assefa - 6xx.xxx</p>
+                </div>
+                <div class="col-md-4 footer-links wow fadeInUp animated" style="visibility: visible; animation-name: fadeInUp;">
+                    <div class="row">
+                        <div class="col">
+                            <h3>Links</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><a class="scroll-link" href="#top-content">Home</a></p>
+                            <p><a href="#">Computer</a></p>
+                            <p><a href="#">Phone</a></p>
+                            <p><a href="#">Accessories</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 footer-copyright">
+                    © CS545 - Web Application Architecture by <a href="https://www.facebook.com/muhyidean.altarawneh">Muhyieddin  Al-Tarawneh</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

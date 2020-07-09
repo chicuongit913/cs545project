@@ -1,0 +1,19 @@
+.login-logo {
+    width: 150px;
+}
+.h2{
+    font-weight: 700;
+}
+
+input.form-control {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+    padding: 20px 10px;
+}
+
+button#btnLogin{
+    background-color: #57b846;
+    color: #fff;
+    font-weight: 600;
+}
