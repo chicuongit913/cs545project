@@ -1,10 +1,16 @@
 package cs545_project.online_market.domain;
 
+import cs545_project.online_market.service.UserService;
+import cs545_project.online_market.validation.FiledMatch.FieldMatch;
+import cs545_project.online_market.validation.UniqueKey.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,6 +20,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldMatch(first = "password", second = "confirm_password", message = "The password fields must match")
 public class User {
 
 	@Id
@@ -22,19 +29,31 @@ public class User {
 	private Long id;
 
 	@Column(name = "first_name")
+	@Size(min = 3, max = 50, message = "{Size.validation}")
 	private String firstName;
 
 	@Column(name = "last_name")
+	@Size(min = 4, max = 50, message = "{Size.validation}")
 	private String lastName;
 
 	@Column(name = "email")
+	@NotEmpty
+	@Email
 	private String email;
 
 	@Column(name = "username")
+	@NotEmpty
+	@Size(min = 3, max = 50, message = "{Size.validation}")
 	private String username;
 
 	@Column(name = "password")
+	@Size(min = 6, max = 100, message = "{Size.validation}")
+	@NotEmpty
 	private String password;
+
+	@Transient
+	@NotEmpty
+	private String confirm_password;
 
 	//set status for user 0: in-active user - 1: active user
 	@Column(name = "active")

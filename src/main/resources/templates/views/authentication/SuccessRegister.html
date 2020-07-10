@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-css">
+    <link th:href="@{/css/authentication/login.css}" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="page-custom-js">
+     <script type="text/javascript" th:src="@{/js/authentication/login.js}"></script>
+</th:block>
+
+<div class="col mb-5" layout:fragment="main-content">
+    <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
+
+        <h2 class="form-signin-heading text-center mb-5">Congratulation! Your Register is Success.</h2>
+
+        <div class="text-center mb-5">
+            <img class="login-logo" th:src="@{/images/templates/logo_vertical.png}">
+        </div>
+
+        <br/>
+        <div class="text-left mt-5 clearfix clear text-right">
+            <p>You have an account? <span><a th:href="@{/auth/login}" ><i class="fa fa-sign-in"></i> Login</a></span></p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

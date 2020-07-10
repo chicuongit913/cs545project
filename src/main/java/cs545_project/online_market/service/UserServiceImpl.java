@@ -92,4 +92,27 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(request, shippingAddress, "id");
         return shippingAddress;
     }
+
+    @Override
+    public User create(User user) {
+        return this.userRepository.save(user);
+    }
+
+    @Override
+    public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
+
+        if (value == null) {
+            return false;
+        }
+
+        if(fieldName.equals("email")) {
+            return this.userRepository.findByEmail(value.toString()).isPresent();
+        }
+
+        if(fieldName.equals("username")) {
+            return this.userRepository.findByUsername(value.toString()).isPresent();
+        }
+
+        return false;
+    }
 }

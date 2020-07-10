@@ -23,7 +23,7 @@
             <img class="login-logo" th:src="@{/images/templates/logo_vertical.png}">
         </div>
 
-        <form th:action="@{/auth/login}" method="POST" class="form-signin">
+        <form th:action="@{/auth/login}" method="POST" class="form-login">
             <input type="text" id="username" name="username" th:placeholder="Username"
                    class="form-control"/> <br/>
             <input type="password" th:placeholder="Password"
@@ -45,8 +45,8 @@
 
         <div class="text-left mt-5">
             <p>Don’t have an account?</p>
-            <span><a th:href="@{/auth/user_signup}" ><i class="fa fa-user"></i> User Register</a></span> /
-            <span><a th:href="@{/auth/seller_signup}" ><i class="fa fa-briefcase"></i> Seller Register</a></span>
+            <span><a th:href="@{/auth/buyer_register}" ><i class="fa fa-user"></i> Buyer Register</a></span> /
+            <span><a th:href="@{/auth/seller_register}" ><i class="fa fa-briefcase"></i> Seller Register</a></span>
         </div>
 
     </div>
