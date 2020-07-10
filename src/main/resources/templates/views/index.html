@@ -3,14 +3,27 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Home Page</title>
+  <title>Home Page</title>
+  <link th:href="@{/css/index.css}" rel="stylesheet"/>
 </head>
 <body>
 
 <div class="col" layout:fragment="main-content">
-    <div style="min-height: 700px">
-        <h1>Online Market</h1>
+  <div id="product-container">
+    <div class="d-flex flex-row flex-wrap mt-5 mb-5">
+      <div th:each="prod : ${products}" class="col-md-3 col-lg-3 pt-2 pb-2">
+        <div class="card">
+          <img th:src="${prod.images[0]}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <span class="badge badge-light text-success p-2" th:text="${prod.price}"></span>
+            <h5 class="card-title" th:text="${prod.name}"></h5>
+            <p class="card-text" th:text="${prod.description}"></p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 </body>
