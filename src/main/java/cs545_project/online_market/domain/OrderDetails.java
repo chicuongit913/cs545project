@@ -1,62 +1,43 @@
 package cs545_project.online_market.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDetails {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-     private String productId;
+    private int quantity;
 
-     private int quantity;
-
-     private double price;
-
+    private double price;
 
     @OneToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderDetails that = (OrderDetails) o;
+        return id == that.id &&
+            quantity == that.quantity &&
+            Double.compare(that.price, price) == 0 &&
+            Objects.equals(product, that.product);
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, quantity, price, product);
     }
 }

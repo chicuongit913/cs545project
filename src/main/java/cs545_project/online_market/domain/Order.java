@@ -1,59 +1,57 @@
 package cs545_project.online_market.domain;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name = "orderTable")
-//@Table(name = "order")
+@Entity(name = "product_order")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.NEW;
 
-    private String shippingAddress;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="order_id")
+    private List<OrderDetails> orderDetails = new ArrayList<>();
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdDate;
 
-    @OneToMany
-    @JoinColumn(name="id")
-    private List<OrderDetails> orderDetails;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedDate;
 
-    public long getId() {
-        return id;
-    }
+    private String street;
+    private String city;
+    private String state;
+    private String zipCode;
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-
-    public List<OrderDetails> getOrderDetails() {
-        return orderDetails;
-    }
-
-    public void setOrderDetails(List<OrderDetails> orderDetails) {
-        this.orderDetails = orderDetails;
+    public boolean canCancel() {
+        return OrderStatus.NEW.equals(status);
     }
 }
 
