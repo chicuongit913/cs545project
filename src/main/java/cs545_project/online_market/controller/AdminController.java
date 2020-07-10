@@ -16,25 +16,27 @@ public class AdminController {
     SellerService sellerService;
     @Autowired
     ReviewService reviewService;
+
     @GetMapping("/pending-sellers")
-    public String pendingSellers(Model model){
+    public String pendingSellers(Model model) {
         model.addAttribute("pendingSellers", sellerService.getPendingSellers());
         return "admin/pending-sellers";
     }
+
     @PutMapping("/approve-seller/{sellerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void approveSeller(@PathVariable("sellerId") long sellerId) throws NotFoundException {
         sellerService.approveSeller(sellerId);
     }
+
     @PutMapping("/reject-seller/{sellerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void rejectSeller(@PathVariable("sellerId") long sellerId) throws NotFoundException {
         sellerService.rejectSeller(sellerId);
     }
 
-
     @GetMapping("/created-reviews")
-    public String createdReviews(Model model){
+    public String createdReviews(Model model) {
         model.addAttribute("createdReviews", reviewService.getCreatedReviews());
         return "admin/created-reviews";
     }
