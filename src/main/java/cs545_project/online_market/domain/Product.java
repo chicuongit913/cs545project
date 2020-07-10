@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,19 +32,14 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+
     private String name;
 
     private String description;
 
     private double price;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(
-        name = "product_image",
-        joinColumns = {@JoinColumn(name = "product_id")},
-        inverseJoinColumns = {@JoinColumn(name = "image_id")}
-    )
-    private List<Image> images = new ArrayList<>();
+    private MultipartFile image;
 
     @ManyToOne
     @JoinTable(
@@ -82,10 +78,7 @@ public class Product {
     public void addReview(Review review) {
         this.reviews.add(review);
     }
-
-    public void addImage(Image image) {
-        this.images.add(image);
-    }
+    
 
     @Override
     public boolean equals(Object o) {
