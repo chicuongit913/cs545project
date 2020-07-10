@@ -17,13 +17,15 @@
 <div class="col mb-5" layout:fragment="main-content">
     <div class="col-sm-12 col-md-8 offset-md-2 mt-5">
 
-        <h2 class="form-signin-heading text-center mb-5">Seller Register</h2>
+        <h2 class="form-signin-heading text-center mb-5">
+            <span th:text="${create_user_role}=='ROLE_SELLER'?'Seller':'Buyer'" th:remove="tag"></span>  Register
+        </h2>
 
         <div class="text-center mb-5">
             <img class="login-logo" th:src="@{/images/templates/logo_vertical.png}">
         </div>
 
-        <form th:action="@{/auth/seller_register}" th:object="${user_seller}" method="post" class="form-register">
+        <form th:action="${create_user_role}=='ROLE_SELLER'?@{/auth/seller_register}:@{/auth/buyer_register}" th:object="${userRequest}" method="post" class="form-register">
 
             <div class="form-group row">
                 <label class="col-md-4 col-form-label">Username</label>

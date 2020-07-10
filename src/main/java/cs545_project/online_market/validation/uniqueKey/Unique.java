@@ -1,4 +1,4 @@
-package cs545_project.online_market.validation.UniqueKey;
+package cs545_project.online_market.validation.uniqueKey;
 
 import javax.validation.Payload;
 import javax.validation.Constraint;

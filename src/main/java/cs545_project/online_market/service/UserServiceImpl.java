@@ -2,12 +2,16 @@ package cs545_project.online_market.service;
 
 import cs545_project.online_market.controller.request.AddressRequest;
 import cs545_project.online_market.controller.request.FollowSellerRequest;
+import cs545_project.online_market.controller.request.UserRequest;
+import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.domain.BillingAddress;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
+import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,7 +21,11 @@ import java.util.Optional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -94,7 +102,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
+    public User createSeller(UserRequest userRequest) {
+        return this.createUser(userRequest, UserRole.SELLER, 0);
+    }
+
+    @Override
+    public User createBuyer(UserRequest userRequest) {
+        return this.createUser(userRequest, UserRole.BUYER, 1);
+    }
+
+    @Override
+    public User createUser(UserRequest userRequest, UserRole userRole, int active) {
+        User user = new User();
+
+        BeanUtils.copyProperties(userRequest, user);
+
+        // Encode password string to BCryptPasswordEncoder
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Set Role seller when user register is seller
+        user.setRole(userRole);
+        user.setActive(active);
+
         return this.userRepository.save(user);
     }
 
@@ -106,7 +135,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(fieldName.equals("email")) {
-            return this.userRepository.findByEmail(value.toString()).isPresent();
+            return this.userRepository.findByEmail(value.toString()).size() != 0;
         }
 
         if(fieldName.equals("username")) {

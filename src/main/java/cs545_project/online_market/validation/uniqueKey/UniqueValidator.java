@@ -1,7 +1,5 @@
-package cs545_project.online_market.validation.UniqueKey;
+package cs545_project.online_market.validation.uniqueKey;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
