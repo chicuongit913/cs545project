@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,6 +40,9 @@ public class Order {
     @JoinColumn(name="order_id")
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
+    private double points;
+    private double credit;
+
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     private Date createdDate;
@@ -45,13 +50,22 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
 
-    private String street;
-    private String city;
-    private String state;
-    private String zipCode;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "order_shipping")
+    private ShippingAddress shippingAddress;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "order_billing")
+    private BillingAddress billingAddress;
 
     public boolean canCancel() {
         return OrderStatus.NEW.equals(status);
+    }
+
+    public double total() {
+        return orderDetails.stream()
+            .mapToDouble(OrderDetails::total)
+            .sum();
     }
 }
 

@@ -21,9 +21,19 @@ public class OrderDetails {
 
     private double price;
 
+    public OrderDetails(Product product, int quantity, double price) {
+        this.product = product;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public double total() {
+        return price * quantity;
+    }
 
     @Override
     public boolean equals(Object o) {
