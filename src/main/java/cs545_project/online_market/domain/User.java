@@ -19,7 +19,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	private int id;
+	private Long id;
 
 	@Column(name = "first_name")
 	private String firstName;
@@ -79,6 +79,14 @@ public class User {
 
 	public void addBillingAddress(BillingAddress address) {
 		this.billingAddresses.add(address);
+	}
+
+	public void followSeller(User seller) {
+		this.followingSellers.add(seller);
+	}
+
+	public void unFollowSeller(User seller) {
+		this.followingSellers.remove(seller);
 	}
 
 	@Override
