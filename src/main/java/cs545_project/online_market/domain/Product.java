@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +34,12 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-
+    @NotEmpty
+    @Size(min = 3, max = 50, message = "{Size.validation}")
     private String name;
 
+    @NotEmpty
+    @Size(min = 10, max = 200, message = "{Size.validation}")
     private String description;
 
     private double price;
