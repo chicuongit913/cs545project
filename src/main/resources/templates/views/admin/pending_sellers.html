@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/layout}" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending sellers</title>
+</head>
+<body>
+<div id="contents" class="row" layout:fragment="main-content">
+    <div th:replace="components/userAccessMenu :: mnu">User menu</div>
+    <div class="col-lg-9">
+        <div class="h4">Pending sellers</div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Seller name</th>
+                <th scope="col">Seller email</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="seller,iter : ${pendingSellers}">
+                <th scope="row" th:text="${iter.index+1}">1</th>
+                <td th:text="${seller.name}">Elizabeth</td>
+                <td th:text="${seller.email}">Elzi@gmail.com</td>
+                <td>
+                    <a href="#" class="approveSeller" th:data-seller-id="${seller.id}">Approve</a>
+                    <a href="#" class="rejectSeller" th:data-seller-id="${seller.id}">Reject</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/admin.js}"></script>
+</th:block>
+</body>
+</html>
