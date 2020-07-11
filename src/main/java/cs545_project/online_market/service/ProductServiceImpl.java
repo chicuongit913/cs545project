@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -16,7 +17,6 @@ import java.util.Arrays;
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
-
     @Autowired
     private ProductRepository productRepository;
 
@@ -33,4 +33,15 @@ public class ProductServiceImpl implements ProductService {
 
         System.out.println(productRepository.findById(product.getId()));
     }
+
+    @Override
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    @Override
+    public ArrayList<Product> getAll() {
+        return (ArrayList<Product>) productRepository.findAll();
+    }
+
 }

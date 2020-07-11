@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Product</title>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-css">
+    <link th:href="@{/css/authentication/login.css}" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="page-custom-js">
+    <script type="text/javascript" th:src="@{/js/authentication/login.js}"></script>
+</th:block>
+
+<span>products: </span><span th:text="${products}"></span><br/>
+
+
+</div>
+
+</body>
+</html>

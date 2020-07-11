@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Product</title>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-css">
+    <link th:href="@{/css/authentication/login.css}" rel="stylesheet">
+</th:block>
+
+<th:block layout:fragment="page-custom-js">
+    <script type="text/javascript" th:src="@{/js/authentication/login.js}"></script>
+</th:block>
+
+<div class="col mb-5" layout:fragment="main-content">
+    <div class="col-md-6 col-sm-12 offset-md-3 offset-sm-0 mt-5">
+
+        <h2 class="form-signin-heading text-center mb-5" th:text="Welcome"></h2>
+
+        <div class="text-center mb-5">
+            <img class="login-logo" th:src="@{/images/templates/logo_vertical.png}">
+        </div>
+
+        <form  action="#" th:action="@{/seller}" method="post" th:object="${product}" class="form-signin">
+            <fieldset>
+                <legend>Add a Product</legend>
+                <p>
+                    <label  for="name">Product Name:</label>
+                    <input id="name"  type="text" th:field="*{name}" />
+                </p>
+
+                <p>
+                    <label for="desc">Description:</label>
+                    <input id="desc"  type="text" th:field="*{description}" />
+                </p>
+
+                <p>
+                    <label for="price">Price:</label>
+                    <input id="price"  type="text" th:field="*{price}" /><br/>
+                </p>
+
+                <p>
+                    <label for="images">Upload ImageS: </label>
+                    <input id="images"  type="file" multiple="multiple" th:field="*{images}" /><br/>
+                </p>
+
+
+                <p>
+                    <label for="stock">In Stock:</label>
+                    <input id="stock"  type="text" th:field="*{stock}" /><br/>
+                </p>
+
+                <p>
+                    <button type="submit">Save</button>
+                </p>
+            </fieldset>
+        </form>
+</div>
+</div>
+</body>
+</html>
