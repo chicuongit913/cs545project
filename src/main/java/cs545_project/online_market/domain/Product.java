@@ -39,7 +39,7 @@ public class Product {
 
     private double price;
 
-    private MultipartFile image;
+    private String image;
 
     @ManyToOne
     @JoinTable(

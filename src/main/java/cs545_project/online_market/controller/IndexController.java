@@ -30,7 +30,7 @@ public class IndexController  {
                     "15.4-inch (diagonal) LED-backlit display with IPS technology; 2880-by-1800 resolution at 220 pixels per inch with support for millions of colors");
                 productResponse.setPrice(2223 * n);
                 productResponse.setId(n);
-                productResponse.setImages(Arrays.asList("https://m.media-amazon.com/images/I/41795QZGfYL._AC_SL260_.jpg"));
+                productResponse.setImage("https://m.media-amazon.com/images/I/41795QZGfYL._AC_SL260_.jpg");
                 return productResponse;
             })
             .collect(Collectors.toList());

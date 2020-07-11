@@ -4,13 +4,10 @@ import lombok.Data;
 
 import java.util.List;
 
-/**
- * @author knguyen93
- */
 @Data
 public class OrderItemResponse {
     private String productName;
     private double price;
     private int quantity;
-    private List<String> images;
+    private String image;
 }

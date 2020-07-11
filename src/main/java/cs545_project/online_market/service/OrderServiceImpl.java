@@ -129,12 +129,7 @@ public class OrderServiceImpl implements OrderService {
         orderItemResponse.setPrice(orderDetails.getPrice());
         orderItemResponse.setQuantity(orderDetails.getQuantity());
         orderItemResponse.setProductName(orderDetails.getProduct().getName());
-        orderItemResponse.setImages(
-            orderDetails.getProduct()
-                .getImages()
-                .stream()
-                .map(img -> img.getName())// should be map to URL
-                .collect(Collectors.toList()));
+        orderItemResponse.setImage( orderDetails.getProduct().getImage());
         return orderItemResponse;
     }
 

@@ -20,7 +20,7 @@ public class ProductResponse {
 
     private double price;
 
-    private List<String> images = new ArrayList<>();
+    private String image;
 
     private List<ReviewResponse> reviews = new ArrayList<>();
 }
