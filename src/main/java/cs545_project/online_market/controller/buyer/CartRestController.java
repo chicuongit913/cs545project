@@ -49,10 +49,14 @@ public class CartRestController {
     @RequestMapping(value = "/add/{productId}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void addItem(@PathVariable Long productId, HttpServletRequest request) {
-        String sessionId = request.getSession(true).getId();
-        Cart cart = cartService.read(sessionId);
+        String cartId = (String) request.getSession(true).getAttribute(CartController.CART_ID_SESSION_KEY);
+        Cart cart = cartService.read(cartId);
+
         if (cart == null) {
+            String sessionId = request.getSession(true).getId();
+            cartId = request.getSession(true).getId();
             cart = cartService.create(new Cart(sessionId));
+            request.getSession(true).setAttribute(CartController.CART_ID_SESSION_KEY, cartId);
         }
 
         Product product = productService.findById(productId);
@@ -61,23 +65,28 @@ public class CartRestController {
             throw new IllegalArgumentException(new ProductNotFoundException(productId));
         }
         cart.addCartItem(new CartItem(product));
-        cartService.update(sessionId, cart);
+        cartService.update(cartId, cart);
     }
 
     @RequestMapping(value = "/remove/{productId}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeItem(@PathVariable Long productId, HttpServletRequest request) {
-        String sessionId = request.getSession(true).getId();
-        Cart cart = cartService.read(sessionId);
+        String cartId = (String) request.getSession(true).getAttribute(CartController.CART_ID_SESSION_KEY);
+        Cart cart = cartService.read(cartId);
+
         if (cart == null) {
+            String sessionId = request.getSession(true).getId();
+            cartId = request.getSession(true).getId();
             cart = cartService.create(new Cart(sessionId));
+            request.getSession(true).setAttribute(CartController.CART_ID_SESSION_KEY, cartId);
         }
+
         Product product = productService.findById(productId);
         if (product == null) {
             throw new IllegalArgumentException(new ProductNotFoundException(productId));
         }
         cart.removeCartItem(new CartItem(product));
-        cartService.update(sessionId, cart);
+        cartService.update(cartId, cart);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

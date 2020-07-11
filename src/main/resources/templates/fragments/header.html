@@ -47,7 +47,8 @@
                     </div>
 
                     <div th:if="${user_name} and ${user_role} == 'BUYER'" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Action for BUYER</a>
+                        <a class="dropdown-item" th:href="@{/buyer/order/history}"><i class="fa fa-history"></i> OrderHistory</a>
+                        <a class="dropdown-item" href="#"><i class="fa fa-cogs"></i>User Setting</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" th:href="@{/perform_logout}"><i class="fa fa-sign-out"></i> Logout</a>
                     </div>

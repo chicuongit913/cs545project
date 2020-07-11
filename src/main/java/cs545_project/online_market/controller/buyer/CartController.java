@@ -18,14 +18,17 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    static final String CART_ID_SESSION_KEY = "CART_ID_SESSION_KEY";
+
     @RequestMapping
     public String get(HttpServletRequest request, Model model) {
-        String cartId = request.getSession(true).getId();
-        model.addAttribute("cartId", cartId);
+        String cartId = (String) request.getSession(true).getAttribute(CART_ID_SESSION_KEY);
         Cart cart = cartService.read(cartId);
         if (cart == null) {
+            cartId = request.getSession(true).getId();
             cart = new Cart(cartId);
             cartService.create(cart);
+            request.getSession(true).setAttribute(CART_ID_SESSION_KEY, cartId);
         }
         model.addAttribute("cart", cart);
 
