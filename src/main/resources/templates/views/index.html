@@ -8,6 +8,10 @@
 </head>
 <body>
 
+<th:block layout:fragment="page-custom-js">
+  <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+</th:block>
+
 <div class="col" layout:fragment="main-content">
   <div id="product-container">
     <div class="d-flex flex-row flex-wrap mt-5 mb-5">
@@ -17,7 +21,7 @@
           <div class="card-body">
             <span class="badge badge-light text-success p-2" th:text="${prod.price}"></span>
             <h5 class="card-title" th:text="${prod.name}"></h5>
-            <a href="#" class="btn btn-primary"><i class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
+            <a href="#" th:data-name="${prod.name}" th:data-id="${prod.id}" class="btn btn-primary order-btn"><i class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
           </div>
         </div>
       </div>

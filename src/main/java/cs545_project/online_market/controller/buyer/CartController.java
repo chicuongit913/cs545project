@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping(value = "/cart")
+@RequestMapping(value = "/buyer/cart")
 public class CartController {
 
     @Autowired
@@ -20,7 +20,7 @@ public class CartController {
 
     @RequestMapping
     public String get(HttpServletRequest request) {
-        return "redirect:/cart/" + request.getSession(true).getId();
+        return "redirect:/buyer/cart/" + request.getSession(true).getId();
     }
 
     @RequestMapping(value = "/{cartId}", method = RequestMethod.GET)
@@ -33,6 +33,6 @@ public class CartController {
         }
         model.addAttribute("cart", cart);
 
-        return "cart";
+        return "/views/buyer/cart";
     }
 }

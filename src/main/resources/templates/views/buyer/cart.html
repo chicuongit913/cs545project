@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+    <link th:href="@{/css/index.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-js">
+    <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+
+<section class="container">
+    <div>
+        <table class="table table-hover mt-5">
+            <tr>
+                <th>---ID---</th>
+                <th>Name</th>
+                <th>Unit price</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </table>
+        <table id="cart_table" class="table table-hover">
+
+
+                <tr th:each="item: ${cart.cartItems}">
+                    <td th:text="${item.value.product.id}"></td>
+                    <td th:text="${item.value.product.name}"></td>
+                    <td th:text="${item.value.product.price}"></td>
+                    <td th:text="${item.value.quantity}"></td>
+                    <td th:text="${item.value.totalPrice}"></td>
+                    <td><a href="#" class="btn btn-danger product-remove-btn" th:data-id="${item.value.product.id}">
+                        <i class="fa fa-remove" /></i> Remove</a></td>
+                </tr>
+
+
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Grand Total</th>
+                <th th:text="${cart.grandTotal}"></th>
+                <th></th>
+            </tr>
+        </table>
+
+        <div class="text-right mt-5 mb-5">
+
+            <a th:href="@{/}"
+               class="btn btn-default"> <span
+                    class="fa fa-shopping-cart"></span> Continue shopping
+            </a>
+
+            <a href="#" class="btn btn-success"> <span
+                    class="glyphicon-shopping-cart glyphicon"></span> Check out
+            </a>
+        </div>
+
+
+    </div>
+</section>
+</div>
+</body>
+</html>
