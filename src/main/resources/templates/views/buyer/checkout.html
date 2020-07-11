@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-js">
+    <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+    <div class="row mt-5">
+        <h2>Checkout Page</h2>
+    </div>
+</div>
+</body>
+</html>

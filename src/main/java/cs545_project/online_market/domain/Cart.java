@@ -1,13 +1,20 @@
 package cs545_project.online_market.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
+@Setter
 public class Cart {
 	private String cartId;
 	private Map<Long, CartItem> cartItems;
 	private double grandTotal;
+	private int quantity = 0;
 
 	public Cart() {
 		cartItems = new HashMap<Long, CartItem>();
@@ -16,26 +23,6 @@ public class Cart {
 	public Cart(String cartId) {
 		this();
 		this.cartId = cartId;
-	}
-
-	public String getCartId() {
-		return cartId;
-	}
-
-	public void setCartId(String cartId) {
-		this.cartId = cartId;
-	}
-
-	public Map<Long, CartItem> getCartItems() {
-		return cartItems;
-	}
-
-	public void setCartItems(Map<Long, CartItem> cartItems) {
-		this.cartItems = cartItems;
-	}
-
-	public double getGrandTotal() {
-		return grandTotal;
 	}
 
 	public void addCartItem(CartItem item) {
@@ -57,9 +44,14 @@ public class Cart {
 	}
 
 	public void updateGrandTotal() {
+		grandTotal = 0;
+		quantity = 0;
 		for (CartItem item : cartItems.values()) {
-			grandTotal = item.getTotalPrice() * item.getQuantity();
+			grandTotal += item.getTotalPrice();
+			quantity += item.getQuantity();
 		}
+		BigDecimal bd = new BigDecimal(grandTotal).setScale(2, RoundingMode.HALF_UP);
+		grandTotal = bd.doubleValue();
 	}
 
 	@Override

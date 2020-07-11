@@ -19,12 +19,8 @@ public class CartController {
     private CartService cartService;
 
     @RequestMapping
-    public String get(HttpServletRequest request) {
-        return "redirect:/buyer/cart/" + request.getSession(true).getId();
-    }
-
-    @RequestMapping(value = "/{cartId}", method = RequestMethod.GET)
-    public String getCart(@PathVariable(value = "cartId") String cartId, Model model) {
+    public String get(HttpServletRequest request, Model model) {
+        String cartId = request.getSession(true).getId();
         model.addAttribute("cartId", cartId);
         Cart cart = cartService.read(cartId);
         if (cart == null) {

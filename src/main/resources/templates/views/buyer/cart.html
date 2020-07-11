@@ -13,51 +13,51 @@
 </th:block>
 
 <div class="col" layout:fragment="main-content">
+<section>
+    <div class="row mt-5">
+        <h2>Shopping cart</h2>
+    </div>
+</section>
 
 <section class="container">
-    <div>
-        <table class="table table-hover mt-5">
-            <tr>
-                <th>---ID---</th>
-                <th>Name</th>
-                <th>Unit price</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Action</th>
-            </tr>
-        </table>
+    <div class="mt-5">
         <table id="cart_table" class="table table-hover">
-
-
+            <thead>
+                <tr>
+                    <th>---ID---</th>
+                    <th>Name</th>
+                    <th>Unit price</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
                 <tr th:each="item: ${cart.cartItems}">
                     <td th:text="${item.value.product.id}"></td>
                     <td th:text="${item.value.product.name}"></td>
                     <td th:text="${item.value.product.price}"></td>
                     <td th:text="${item.value.quantity}"></td>
                     <td th:text="${item.value.totalPrice}"></td>
-                    <td><a href="#" class="btn btn-danger product-remove-btn" th:data-id="${item.value.product.id}">
-                        <i class="fa fa-remove" /></i> Remove</a></td>
+                    <td><a href="#" class="btn btn-danger btn-sm product-remove-btn" th:data-id="${item.value.product.id}">
+                        <i class="fa fa-remove" /></i></a></td>
                 </tr>
-
-
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Grand Total</th>
-                <th th:text="${cart.grandTotal}"></th>
-                <th></th>
-            </tr>
+            </tbody>
         </table>
+
+        <div class="text-right">
+            <span class="font-weight-bold">Grand Total: </span>
+            <span class="font-weight-bold" th:text="${cart.grandTotal}"></span>
+        </div>
 
         <div class="text-right mt-5 mb-5">
 
             <a th:href="@{/}"
-               class="btn btn-default"> <span
-                    class="fa fa-shopping-cart"></span> Continue shopping
+               class="btn btn-primary"> <span
+                    class="fa fa-home"></span> Continue shopping
             </a>
-
-            <a href="#" class="btn btn-success"> <span
-                    class="glyphicon-shopping-cart glyphicon"></span> Check out
+            <a th:if="${cart.quantity}" th:href="@{/buyer/checkout}" class="btn btn-success"> <span
+                    class="fa fa-check"></span> Check out
             </a>
         </div>
 
