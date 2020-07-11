@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author knguyen93
@@ -15,13 +17,8 @@ import java.util.Arrays;
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
-
-    private ProductRepository productRepository;
-
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private ProductRepository productRepository;
 
     @Override
     public void test() {
@@ -35,4 +32,28 @@ public class ProductServiceImpl implements ProductService {
 
         System.out.println(productRepository.findById(product.getId()));
     }
+
+    @Override
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
+    @Override
+    public ArrayList<Product> getAll() {
+        return (ArrayList<Product>) productRepository.findAll();
+    }
+
+    @Override
+    public Product findById(Long productId) {
+            Optional<Product> product = productRepository.findById(productId);
+            return product.isPresent() ? product.get(): null;
+
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        productRepository.deleteById(productId);
+    }
+
+
 }
