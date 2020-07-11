@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: simple-geography-service
+    name: online-market-service
   datasource:
     url: jdbc:h2:mem:online_market;DB_CLOSE_DELAY=-1
     username: root

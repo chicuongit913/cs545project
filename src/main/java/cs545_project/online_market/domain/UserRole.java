@@ -1,4 +1,4 @@
-package cs545_project.online_market.helper;
+package cs545_project.online_market.domain;
 
 import lombok.Getter;
 

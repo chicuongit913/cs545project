@@ -1,19 +1,30 @@
 package cs545_project.online_market.domain;
 
-import jdk.jfr.Category;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import cs545_project.online_market.domain.Review;
-
+import java.util.Objects;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id
@@ -21,67 +32,87 @@ public class Product {
     private long id;
 
     private String name;
-    private String image;
-    private String sellerId;
+
+    private String description;
+
+    private double price;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+        name = "product_image",
+        joinColumns = {@JoinColumn(name = "product_id")},
+        inverseJoinColumns = {@JoinColumn(name = "image_id")}
+    )
+    private List<Image> images = new ArrayList<>();
+
+    @ManyToOne
+    @JoinTable(
+        name = "product_seller",
+        joinColumns = {@JoinColumn(name = "product_id")},
+        inverseJoinColumns = {@JoinColumn(name = "seller_id")}
+    )
+    private User seller;
+
     private Integer stock;
-    private String isInUse;
+
+    /**
+     * Once Product is in use, it no longer be deleted
+     */
+    private boolean isInUse;
+
     @OneToMany
-    @JoinColumn(name="Review_id")
-    private List<Review> reviews;
+    @JoinTable(
+        name = "product_review",
+        joinColumns = {@JoinColumn(name = "product_id")},
+        inverseJoinColumns = {@JoinColumn(name = "review_id")}
+    )
+    private List<Review> reviews = new ArrayList<>();
 
-    public long getId() {
-        return id;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdDate;
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date updatedDate;
+
+    public boolean canDelete() {
+        return !isInUse;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void addReview(Review review) {
+        this.reviews.add(review);
     }
 
-    public String getName() {
-        return name;
+    public void addImage(Image image) {
+        this.images.add(image);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id == product.id &&
+            Objects.equals(name, product.name) &&
+            Objects.equals(description, product.description) &&
+            Objects.equals(seller, product.seller);
     }
 
-    public String getImage() {
-        return image;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, seller);
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getSellerId() {
-        return sellerId;
-    }
-
-    public void setSellerId(String sellerId) {
-        this.sellerId = sellerId;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    public String getIsInUse() {
-        return isInUse;
-    }
-
-    public void setIsInUse(String isInUse) {
-        this.isInUse = isInUse;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    @Override
+    public String toString() {
+        return "Product{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", price=" + price +
+            ", stock=" + stock +
+            ", isInUse=" + isInUse +
+            ", reviews=" + reviews +
+            '}';
     }
 }

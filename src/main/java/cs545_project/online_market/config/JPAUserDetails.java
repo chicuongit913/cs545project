@@ -1,7 +1,7 @@
 package cs545_project.online_market.config;
 
-import cs545_project.online_market.domain.Role;
 import cs545_project.online_market.domain.User;
+import cs545_project.online_market.domain.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,15 +9,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class JPAUserDetails implements UserDetails {
 
     private String username;
     private String password;
     private boolean isActive;
-    private Role role;
+    private UserRole role;
 
     public JPAUserDetails(User user) {
         username = user.getUsername();
@@ -29,7 +27,7 @@ public class JPAUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
-        grantedAuthorityList.add(new SimpleGrantedAuthority(role.getRole()));
+        grantedAuthorityList.add(new SimpleGrantedAuthority(role.getName()));
         return grantedAuthorityList;
     }
 
