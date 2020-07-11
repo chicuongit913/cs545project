@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/layout}" xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending reviews</title>
+</head>
+<body>
+<div id="contents" class="row" layout:fragment="main-content">
+    <div th:replace="components/userAccessMenu :: mnu">User menu</div>
+    <div class="col-lg-9">
+        <div class="h4">Pending reviews</div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Buyer</th>
+                <th scope="col">Ordered product</th>
+                <th scope="col">Created date</th>
+                <th scope="col">Stars</th>
+                <th scope="col">Comment</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="review,iter : ${createdReviews}">
+                <th scope="row" th:text="${iter.index+1}">1</th>
+                <td th:text="${review.buyer}">Elzi</td>
+                <td th:text="${review.orderProduct}">Iphone11 Promax</td>
+                <td th:text="${review.createdDate}">07/10/2020</td>
+                <td th:text="${review.stars}">5</td>
+                <td th:text="${review.comment}">Good</td>
+                <td>
+                    <a href="#" class="postReview" th:data-review-id="${review.id}">Post</a>
+                    <a href="#" class="declineReview" th:data-review-id="${review.id}">Decline</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:src="@{/js/admin.js}"></script>
+</th:block>
+</body>
+</html>
