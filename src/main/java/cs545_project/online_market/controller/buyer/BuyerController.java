@@ -1,11 +1,8 @@
 package cs545_project.online_market.controller.buyer;
 
-import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
-import cs545_project.online_market.exception.ProductNotFoundException;
 import cs545_project.online_market.exception.UserNotFoundException;
-import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.CartService;
 import cs545_project.online_market.service.OrderService;
 import cs545_project.online_market.service.UserService;
