@@ -24,12 +24,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotEmpty
-    @Size(min = 3, max = 50, message = "{Size.validation}")
     private String name;
 
-    @NotEmpty
-    @Size(min = 10, max = 200, message = "{Size.validation}")
+
     private String description;
 
     private double price;

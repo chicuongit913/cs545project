@@ -8,10 +8,6 @@
 </head>
 <body>
 
-<th:block layout:fragment="page-custom-js">
-  <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
-</th:block>
-
 <div class="col" layout:fragment="main-content">
   <div id="product-container">
     <div class="d-flex flex-row mt-5 mb-5">
@@ -68,7 +64,7 @@
               <h3 class="cus-text-light">No available review</h3>
             </div>
           </div>
-          <div class="post-review-form col-6">
+          <div class="post-review-form col-6" th:if="${user_name} and ${user_role} == 'BUYER'">
             <form action="#" th:action="@{/product/{id}/review(id=${product.id})}" method="post"
                   th:object="${reviewRequest}">
               <h4>Post a Review</h4>

@@ -1,5 +1,6 @@
 package cs545_project.online_market.service;
 
+import cs545_project.online_market.controller.request.ProductRequest;
 import cs545_project.online_market.controller.request.ReviewRequest;
 import cs545_project.online_market.controller.response.ProductResponse;
 import cs545_project.online_market.controller.response.ReviewResponse;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProductServiceImpl implements ProductService {
+
     private ProductRepository productRepository;
 
     @Autowired
@@ -29,20 +31,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void test() {
+    public void saveProduct(ProductRequest productRequest, String path) {
         Product product = new Product();
-        product.setDescription("Product description");
-        product.setPrice(2333.3);
-        product.setName("Iphone 11");
-        product.setStock(100);
+        product.setImage(path);
+        product.setName(productRequest.getName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setStock(productRequest.getStock());
+        product.setCreatedDate(productRequest.getCreatedDate());
+        product.setUpdatedDate(productRequest.getUpdatedDate());
 
-        productRepository.save(product);
 
-        System.out.println(productRepository.findById(product.getId()));
-    }
-
-    @Override
-    public void saveProduct(Product product) {
         productRepository.save(product);
     }
 
@@ -69,6 +68,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void updateProduct(ProductRequest productRequest, String path, Long id) {
+        Product product = new Product();
+
+        product.setImage(path);
+        product.setId(id);
+        product.setName(productRequest.getName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setStock(productRequest.getStock());
+        product.setCreatedDate(productRequest.getCreatedDate());
+        product.setUpdatedDate(productRequest.getUpdatedDate());
+
+
+        productRepository.save(product);
+    }
+
     public ProductResponse postReview(Long id, ReviewRequest reviewRequest) {
         Product product = productRepository
             .findById(id)
@@ -83,6 +98,7 @@ public class ProductServiceImpl implements ProductService {
         response.setReviews(
             product.getReviews()
                 .stream()
+                .filter(Review::isValid)
                 .map(r -> {
                     ReviewResponse reviewResponse = new ReviewResponse();
                     BeanUtils.copyProperties(r, reviewResponse);
