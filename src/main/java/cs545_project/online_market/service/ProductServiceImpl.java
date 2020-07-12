@@ -11,9 +11,7 @@ import cs545_project.online_market.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +25,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -36,22 +33,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void test() {
-        Product product = new Product();
-        product.setDescription("Product description");
-        product.setPrice(2333.3);
-        product.setName("Iphone 11");
-        product.setStock(100);
-
-        productRepository.save(product);
-
-        System.out.println(productRepository.findById(product.getId()));
-    }
-
-    @Override
     public void saveProduct(ProductRequest productRequest, String path) {
         Product product = new Product();
-
         product.setImage(path);
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
@@ -116,6 +99,7 @@ public class ProductServiceImpl implements ProductService {
         response.setReviews(
             product.getReviews()
                 .stream()
+                .filter(Review::isValid)
                 .map(r -> {
                     ReviewResponse reviewResponse = new ReviewResponse();
                     BeanUtils.copyProperties(r, reviewResponse);

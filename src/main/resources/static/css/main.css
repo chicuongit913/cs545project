@@ -32,3 +32,27 @@
 .cart-active i{
     color: #57b846;
 }
+
+#main-body-content {
+    min-height: 600px;
+}
+
+.cus-text-light {
+    color: #777;
+}
+
+.price-text {
+    font-size: 14px;
+}
+
+input.form-control {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}
+
+button.submit{
+    background-color: #57b846;
+    color: #fff;
+    font-weight: 600;
+}

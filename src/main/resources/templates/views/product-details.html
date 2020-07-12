@@ -7,11 +7,9 @@
   <link th:href="@{/css/product-details.css}" rel="stylesheet"/>
 </head>
 <body>
-
 <th:block layout:fragment="page-custom-js">
   <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
 </th:block>
-
 <div class="col" layout:fragment="main-content">
   <div id="product-container">
     <div class="d-flex flex-row mt-5 mb-5">
@@ -35,6 +33,14 @@
             <a href="#" th:data-name="${product.name}" th:data-id="${product.id}"
                class="btn btn-success order-btn shadow"><i
                 class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
+          </div>
+          <div class="d-flex flex-row align-items-center mt-3">
+            <span th:text="'Sold by: ' + ${product.seller.lastName}"></span>
+            <a th:if="${user_role} == 'BUYER' or !${user_role}"
+               th:href="${isFollow}?@{/buyer/un_follow_seller/{id}(id = ${product.seller.id})}:
+                                    @{/buyer/follow_seller/{id}(id = ${product.seller.id})}" class="btn btn-sm ml-2">
+              <i th:class="${isFollow}?'text-danger fa fa-heart':'text-muted fa fa-heart'"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -68,7 +74,7 @@
               <h3 class="cus-text-light">No available review</h3>
             </div>
           </div>
-          <div class="post-review-form col-6">
+          <div class="post-review-form col-6" th:if="${user_name} and ${user_role} == 'BUYER'">
             <form action="#" th:action="@{/product/{id}/review(id=${product.id})}" method="post"
                   th:object="${reviewRequest}">
               <h4>Post a Review</h4>

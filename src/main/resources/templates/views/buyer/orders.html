@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Orders</title>
+  <link th:href="@{/css/orders.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-js">
+  <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+  <div id="order-container">
+    <div class="d-flex flex-column mt-5 mb-5">
+      <div class="col-12">
+        <h2>Your orders</h2>
+      </div>
+      <div th:each="order : ${orders}" class="col-12 pt-2 pb-2">
+        <div class="card shadow">
+          <div class="card-header">
+            <div class="d-flex justify-content-between flex-wrap">
+              <div class="flex-column mb-2">
+                <div>
+                  <span class="cus-text-light" th:text="${order.status}"></span>
+                </div>
+                <div>
+                  <span class="cus-text-light" th:text="${order.updatedDate}"></span>
+                </div>
+              </div>
+              <div class="flex-column mb-2">
+                <div>
+                  <span class="cus-text-light">TOTAL</span>
+                </div>
+                <div>
+                  <span class="cus-text-light" th:text="${order.total}"></span>
+                </div>
+              </div>
+              <div class="flex-column mb-2">
+                <div>
+                  <span class="cus-text-light">SHIP TO</span>
+                </div>
+                <div>
+                  <span class="cus-text-light" th:text="${order.receiver}"></span>
+                </div>
+              </div>
+              <div class="flex-column mb-2">
+                <div>
+                  <span class="cus-text-light" th:text="'ORDER' + ${order.orderCode}"></span>
+                </div>
+                <div>
+                  <a href="#">Order Details</a>
+                  <a href="#" class="border-left border-grey pl-2">Invoice</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-column">
+              <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap mb-2">
+                <div class="col-md-2">
+                  <img class="prod-image" th:src="${item.image}">
+                </div>
+                <div class="col-md-10 flex-column">
+                  <div>
+                    <a th:href="@{/product/{id}(id=${item.productId})}" th:text="${item.productName}"></a>
+                  </div>
+                  <div>
+                    <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${item.price}"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

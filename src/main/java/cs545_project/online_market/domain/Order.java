@@ -16,9 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Order {
     private OrderStatus status = OrderStatus.NEW;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name="order_id")
+    @JoinColumn(name = "order_id")
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
     private double points;
@@ -49,6 +49,12 @@ public class Order {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
+
+    private String receiver;
+
+    @OneToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinTable(name = "order_shipping")

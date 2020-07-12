@@ -4,21 +4,28 @@ import cs545_project.online_market.controller.request.AddressRequest;
 import cs545_project.online_market.controller.request.FollowSellerRequest;
 import cs545_project.online_market.controller.request.UserRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
+import cs545_project.online_market.controller.response.CardResponse;
+import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.domain.BillingAddress;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.UserRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@NoArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -28,9 +35,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private Util util;
 
     @Override
     public Optional<User> findByUsername(String userName) {
@@ -38,31 +43,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User followSeller(FollowSellerRequest request) {
-        User buyer = this.userRepository.findByUsername(request.getBuyerUserName())
-            .map(b -> {
-                b.followSeller(
-                    this.userRepository.findByUsername(request.getSellerUserName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid Seller")));
-                return b;
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Invalid Buyer"));
-
-        return this.userRepository.save(buyer);
-    }
-
-    @Override
-    public User unFollowSeller(FollowSellerRequest request) {
-        User buyer = this.userRepository.findByUsername(request.getBuyerUserName())
-            .map(b -> {
-                b.unFollowSeller(
-                    this.userRepository.findByUsername(request.getSellerUserName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid Seller")));
-                return b;
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Invalid Buyer"));
-
-        return this.userRepository.save(buyer);
+    public User findById(long id) {
+        return this.userRepository.findById(id).isPresent()?
+                this.userRepository.findById(id).get():null;
     }
 
     @Override
@@ -112,6 +95,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void followSeller(User seller) {
+        User user = util.getCurrentUser();
+        if(!isUserFollowSeller(seller)) {
+            user.addFollowSeller(seller);
+            this.userRepository.save(user);
+        }
+    }
+
+    @Override
+    public void unFollowSeller(User seller) {
+        User user = util.getCurrentUser();
+        if(isUserFollowSeller(seller)) {
+            user.removeFollowSeller(seller);
+            this.userRepository.save(user);
+        }
+    }
+
+    @Override
     public User createUser(UserRequest userRequest, UserRole userRole, int active) {
         User user = new User();
 
@@ -143,5 +144,59 @@ public class UserServiceImpl implements UserService {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isUserFollowSeller(User seller) {
+        User user = util.getCurrentUser();
+        if(user == null)
+            return false;
+        return user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
+    }
+
+    @Override
+    public CheckoutUserResponse getUserForCheckout() {
+        User user = util.getCurrentUser();
+
+        if (user != null) {
+            CheckoutUserResponse response = new CheckoutUserResponse();
+            response.setCards(
+                user.getCards()
+                .stream()
+                .map(card -> {
+                    CardResponse cardResponse = new CardResponse();
+                    BeanUtils.copyProperties(card, cardResponse, "cardNumber");
+                    cardResponse.setCardNumber(Util.generateDisplayCardNumber(card.getCardNumber()));
+                    return cardResponse;
+                }).collect(Collectors.toList()));
+            response.setName(user.getFullName());
+            response.setEmail(user.getEmail());
+            response.setBillingAddresses(
+                user.getBillingAddresses()
+                    .stream()
+                    .map(this::mapToBillingAddressResponse)
+                    .collect(Collectors.toList()));
+            response.setShippingAddresses(
+                user.getShippingAddresses()
+                .stream()
+                .map(this::mapToShippingAddressResponse)
+                .collect(Collectors.toList())
+            );
+
+            return response;
+        }
+        return null;
+    }
+
+    private AddressResponse mapToBillingAddressResponse(BillingAddress billingAddress) {
+        AddressResponse response = new AddressResponse();
+        BeanUtils.copyProperties(billingAddress, response);
+        return response;
+    }
+
+    private AddressResponse mapToShippingAddressResponse(ShippingAddress shippingAddress) {
+        AddressResponse response = new AddressResponse();
+        BeanUtils.copyProperties(shippingAddress, response);
+        return response;
     }
 }

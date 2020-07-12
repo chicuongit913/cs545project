@@ -2,11 +2,8 @@ package cs545_project.online_market.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
@@ -30,7 +26,7 @@ public class Review {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String text;
@@ -42,4 +38,8 @@ public class Review {
     @CreationTimestamp
     @Column(name = "created_date")
     private Date createdDate;
+
+    public boolean isValid() {
+        return ReviewStatus.APPROVED.equals(status);
+    }
 }

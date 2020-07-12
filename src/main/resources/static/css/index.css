@@ -5,3 +5,11 @@
 .price-text {
   font-size: 14px;
 }
+
+.product-image {
+  width: 100%;
+}
+
+.quantity-input {
+  width: 70px;
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-css">
+    <link th:href="@{/css/buyer/setting.css}" rel="stylesheet">
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+    <div class="row mt-5">
+        <h2>Setting Page</h2>
+    </div>
+    <div class="mt-5 block-setting">
+        <div class="block-setting-header" >
+            <span class="float-left">Billing Address</span>
+            <a th:href="@{/buyer/address/create(type = 'billing')}" class="btn btn-primary float-right">
+                <i class="fa fa-plus"></i> New Billing address
+            </a>
+        </div>
+
+        <div class="block-setting-body" >
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            CITY
+                        </th>
+                        <th>
+                            STATE
+                        </th>
+                        <th>
+                            STREET
+                        </th>
+                        <th>
+                            ZIPCODE
+                        </th>
+                        <th>
+                            ACTION
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="address:${user.billingAddresses}">
+                        <td th:text="${address.id}"></td>
+                        <td th:text="${address.city}"></td>
+                        <td th:text="${address.state}"></td>
+                        <td th:text="${address.street}"></td>
+                        <td th:text="${address.zipCode}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" th:href="@{/buyer/address/edit/{id}(id = ${address.id})}" >
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/buyer/address/delete/{id}(id = ${address.id})}" >
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-5 block-setting">
+        <div class="block-setting-header" >
+            <span class="float-left">Shipping Address</span>
+            <a th:href="@{/buyer/address/create(type = 'shipping')}" class="btn btn-primary float-right">
+                <i class="fa fa-plus"></i> New Shipping Address
+            </a>
+        </div>
+
+        <div class="block-setting-body" >
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        CITY
+                    </th>
+                    <th>
+                        STATE
+                    </th>
+                    <th>
+                        STREET
+                    </th>
+                    <th>
+                        ZIPCODE
+                    </th>
+                    <th>
+                        ACTION
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="address:${user.shippingAddresses}">
+                    <td th:text="${address.id}"></td>
+                    <td th:text="${address.city}"></td>
+                    <td th:text="${address.state}"></td>
+                    <td th:text="${address.street}"></td>
+                    <td th:text="${address.zipCode}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-warning" th:href="@{/buyer/address/edit/{id}(id = ${address.id})}" >
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-sm btn-danger" th:href="@{/buyer/address/delete/{id}(id = ${address.id})}" >
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-5 block-setting">
+        <div class="block-setting-header" >
+            <span class="float-left">Seller Following</span>
+        </div>
+
+        <div class="block-setting-body" >
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        FIRST NAME
+                    </th>
+                    <th>
+                        LAST NAME
+                    </th>
+                    <th>
+                        EMAIL
+                    </th>
+                    <th>
+                        ACTION
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user:${user.followingSellers}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-danger" th:href="@{/buyer/un_follow_seller/{id}(id = ${user.id})}" >
+                            <i class="fa fa-undo"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

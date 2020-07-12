@@ -36,6 +36,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/buyer/checkout").hasRole("BUYER")
+                .antMatchers("/buyer/setting").hasRole("BUYER")
+                .antMatchers("/buyer/follow_seller/**").hasRole("BUYER")
 //                .antMatchers("/edit/**").authenticated()
 //                .antMatchers("/delete/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()

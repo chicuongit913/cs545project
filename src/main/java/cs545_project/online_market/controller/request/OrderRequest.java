@@ -3,6 +3,7 @@ package cs545_project.online_market.controller.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,15 +18,21 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderRequest {
 
-    @NotEmpty
-    @Valid
-    private List<ItemRequest> itemRequests;
+//    @NotEmpty
+//    @Valid
+//    private List<ItemRequest> itemRequests;
 
-    @NotNull
-    private AddressRequest billingAddress;
+//    @NotNull
+//    private AddressRequest billingAddress;
+//
+//    @NotNull
+//    private AddressRequest shippingAddress;
 
-    @NotNull
-    private AddressRequest shippingAddress;
+    private Long billingAddress;
+    private Long shippingAddress;
+    private Long paymentCard;
+
+    private String receiver;
 
     private boolean applyCoupon;
 

@@ -4,6 +4,7 @@ import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.CartItem;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.exception.ProductNotFoundException;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.CartService;
 import cs545_project.online_market.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +50,14 @@ public class CartRestController {
     @RequestMapping(value = "/add/{productId}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void addItem(@PathVariable Long productId, HttpServletRequest request) {
-        String sessionId = request.getSession(true).getId();
-        Cart cart = cartService.read(sessionId);
+        String cartId = Util.extractCartId(request);
+        Cart cart = cartService.read(cartId);
+
         if (cart == null) {
+            String sessionId = request.getSession(true).getId();
+            cartId = request.getSession(true).getId();
             cart = cartService.create(new Cart(sessionId));
+            Util.updateCartId(request, cartId);
         }
 
         Product product = productService.findById(productId);
@@ -61,23 +66,28 @@ public class CartRestController {
             throw new IllegalArgumentException(new ProductNotFoundException(productId));
         }
         cart.addCartItem(new CartItem(product));
-        cartService.update(sessionId, cart);
+        cartService.update(cartId, cart);
     }
 
     @RequestMapping(value = "/remove/{productId}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeItem(@PathVariable Long productId, HttpServletRequest request) {
-        String sessionId = request.getSession(true).getId();
-        Cart cart = cartService.read(sessionId);
+        String cartId = Util.extractCartId(request);
+        Cart cart = cartService.read(cartId);
+
         if (cart == null) {
+            String sessionId = request.getSession(true).getId();
+            cartId = request.getSession(true).getId();
             cart = cartService.create(new Cart(sessionId));
+            Util.updateCartId(request, cartId);
         }
+
         Product product = productService.findById(productId);
         if (product == null) {
             throw new IllegalArgumentException(new ProductNotFoundException(productId));
         }
         cart.removeCartItem(new CartItem(product));
-        cartService.update(sessionId, cart);
+        cartService.update(cartId, cart);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

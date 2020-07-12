@@ -1,35 +1,29 @@
 package cs545_project.online_market.controller.request;
 
+import cs545_project.online_market.validation.ensureZipcode.EnsureZipcode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
-/**
- * @author knguyen93
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressRequest {
 
-    private Long id;
+    private int id;
 
-    @NotBlank
+    @NotEmpty
     private String street;
 
-    @NotBlank
+    @NotEmpty
     private String city;
 
-    @NotBlank
-    @Size(min = 2, max = 2, message = "{Size.state}")
+    @NotEmpty
+    @Pattern(regexp = "[\\w]{2}", message = "State mus be 2 words!")
     private String state;
 
-    @Min(11111)
-    @Max(99999)
+    @EnsureZipcode(message = "Zipcode must be 5 digits!")
     private int zipCode;
 }

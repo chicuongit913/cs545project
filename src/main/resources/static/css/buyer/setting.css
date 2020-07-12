@@ -1,0 +1,15 @@
+.block-setting {
+}
+.block-setting .block-setting-header {
+    height: 50px;
+    display: block;
+    border-bottom: 1px solid #ccc;
+}
+
+.block-setting .block-setting-header a{
+}
+
+.block-setting .block-setting-header span{
+    font-size: 20px;
+    color: #57b846;
+}
