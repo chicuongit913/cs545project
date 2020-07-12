@@ -4,6 +4,8 @@ import cs545_project.online_market.controller.request.AddressRequest;
 import cs545_project.online_market.controller.request.FollowSellerRequest;
 import cs545_project.online_market.controller.request.UserRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
+import cs545_project.online_market.controller.response.CardResponse;
+import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.domain.BillingAddress;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
@@ -15,9 +17,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -148,5 +152,51 @@ public class UserServiceImpl implements UserService {
         if(user == null)
             return false;
         return user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
+    }
+
+    @Override
+    public CheckoutUserResponse getUserForCheckout() {
+        User user = util.getCurrentUser();
+
+        if (user != null) {
+            CheckoutUserResponse response = new CheckoutUserResponse();
+            response.setCards(
+                user.getCards()
+                .stream()
+                .map(card -> {
+                    CardResponse cardResponse = new CardResponse();
+                    BeanUtils.copyProperties(card, cardResponse, "cardNumber");
+                    cardResponse.setCardNumber(Util.generateDisplayCardNumber(card.getCardNumber()));
+                    return cardResponse;
+                }).collect(Collectors.toList()));
+            response.setName(user.getFullName());
+            response.setEmail(user.getEmail());
+            response.setBillingAddresses(
+                user.getBillingAddresses()
+                    .stream()
+                    .map(this::mapToBillingAddressResponse)
+                    .collect(Collectors.toList()));
+            response.setShippingAddresses(
+                user.getShippingAddresses()
+                .stream()
+                .map(this::mapToShippingAddressResponse)
+                .collect(Collectors.toList())
+            );
+
+            return response;
+        }
+        return null;
+    }
+
+    private AddressResponse mapToBillingAddressResponse(BillingAddress billingAddress) {
+        AddressResponse response = new AddressResponse();
+        BeanUtils.copyProperties(billingAddress, response);
+        return response;
+    }
+
+    private AddressResponse mapToShippingAddressResponse(ShippingAddress shippingAddress) {
+        AddressResponse response = new AddressResponse();
+        BeanUtils.copyProperties(shippingAddress, response);
+        return response;
     }
 }

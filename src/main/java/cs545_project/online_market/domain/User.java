@@ -117,6 +117,10 @@ public class User {
 		this.followingSellers.remove(seller);
 	}
 
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
+
 	@Override
 	public String toString() {
 		return "User{" +

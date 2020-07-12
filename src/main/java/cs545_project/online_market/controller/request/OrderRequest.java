@@ -18,15 +18,19 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderRequest {
 
-    @NotEmpty
-    @Valid
-    private List<ItemRequest> itemRequests;
+//    @NotEmpty
+//    @Valid
+//    private List<ItemRequest> itemRequests;
 
-    @NotNull
-    private AddressRequest billingAddress;
+//    @NotNull
+//    private AddressRequest billingAddress;
+//
+//    @NotNull
+//    private AddressRequest shippingAddress;
 
-    @NotNull
-    private AddressRequest shippingAddress;
+    private Long billingAddress;
+    private Long shippingAddress;
+    private Long paymentCard;
 
     private String receiver;
 

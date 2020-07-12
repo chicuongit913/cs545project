@@ -18,7 +18,7 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
 	@NotEmpty(message = "{String.empty}")
 	private String street;
