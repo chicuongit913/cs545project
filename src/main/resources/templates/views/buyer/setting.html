@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-css">
+    <link th:href="@{/css/buyer/setting.css}" rel="stylesheet">
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+    <div class="row mt-5">
+        <h2>Setting Page</h2>
+    </div>
+    <div class="mt-5 block-setting">
+        <div class="block-setting-header" >
+            <span class="float-left">Billing Address</span>
+            <a th:href="@{/buyer/billing/address}" class="btn btn-primary float-right">
+                <i class="fa fa-plus"></i> New Billing address
+            </a>
+        </div>
+
+        <div class="block-setting-body" >
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

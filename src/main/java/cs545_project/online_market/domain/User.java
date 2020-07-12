@@ -43,10 +43,10 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private UserRole role;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<ShippingAddress> shippingAddresses = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
 	private List<BillingAddress> billingAddresses = new ArrayList<>();
 
 	@OneToMany(mappedBy = "seller")
