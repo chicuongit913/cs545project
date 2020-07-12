@@ -18,7 +18,7 @@
     <div class="mt-5 block-setting">
         <div class="block-setting-header" >
             <span class="float-left">Billing Address</span>
-            <a th:href="@{/buyer/billing/address}" class="btn btn-primary float-right">
+            <a th:href="@{/buyer/address/create(type = 'billing')}" class="btn btn-primary float-right">
                 <i class="fa fa-plus"></i> New Billing address
             </a>
         </div>
@@ -71,7 +71,7 @@
     <div class="mt-5 block-setting">
         <div class="block-setting-header" >
             <span class="float-left">Shipping Address</span>
-            <a th:href="@{/buyer/billing/address}" class="btn btn-primary float-right">
+            <a th:href="@{/buyer/address/create(type = 'shipping')}" class="btn btn-primary float-right">
                 <i class="fa fa-plus"></i> New Shipping Address
             </a>
         </div>

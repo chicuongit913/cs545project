@@ -81,7 +81,7 @@ public class AuthenticationController {
 
     @GetMapping("/success_register")
     public String getSuccessRegister(){
-        return "/views/authentication/SuccessRegister";
+        return "/views/authentication/successRegister";
     }
 
     @GetMapping("/denied")

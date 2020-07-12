@@ -44,3 +44,15 @@
 .price-text {
     font-size: 14px;
 }
+
+input.form-control {
+    border: none;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0;
+}
+
+button.submit{
+    background-color: #57b846;
+    color: #fff;
+    font-weight: 600;
+}

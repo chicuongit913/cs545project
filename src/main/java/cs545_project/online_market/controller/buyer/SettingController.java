@@ -23,18 +23,7 @@ public class SettingController {
 
     @GetMapping
     public String getSetting(Model model){
-
-        BillingAddress billingAddress = new BillingAddress();
         User user = util.getCurrentUser();
-//
-        billingAddress.setUser(user);
-        billingAddress.setCity("aaaaa");
-        billingAddress.setState("IA");
-        billingAddress.setStreet("asdasdasdasdasd");
-        billingAddress.setZipCode(111222);
-
-        addressService.save(billingAddress);
-
         model.addAttribute("user", user);
         return "/views/buyer/setting";
     }
