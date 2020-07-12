@@ -14,27 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/buyer")
 public class BuyerController {
-    private CartService cartService;
     private OrderService orderService;
 
     @Autowired
     public BuyerController(CartService cartService, OrderService orderService) {
-        this.cartService = cartService;
         this.orderService = orderService;
-    }
-
-    @RequestMapping("/cart")
-    public String viewCart(HttpServletRequest request, Model model) {
-        String cartId = request.getSession(true).getId();
-        model.addAttribute("cartId", cartId);
-        Cart cart = cartService.read(cartId);
-        if (cart == null) {
-            cart = new Cart(cartId);
-            cartService.create(cart);
-        }
-        model.addAttribute("cart", cart);
-
-        return "/views/buyer/cart";
     }
 
     @GetMapping("/checkout")

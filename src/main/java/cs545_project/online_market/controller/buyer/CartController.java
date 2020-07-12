@@ -3,14 +3,11 @@ package cs545_project.online_market.controller.buyer;
 import javax.servlet.http.HttpServletRequest;
 
 import cs545_project.online_market.domain.Cart;
-import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping(value = "/buyer/cart")
