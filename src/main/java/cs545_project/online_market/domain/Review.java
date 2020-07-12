@@ -42,4 +42,8 @@ public class Review {
     @CreationTimestamp
     @Column(name = "created_date")
     private Date createdDate;
+
+    public boolean isValid() {
+        return ReviewStatus.APPROVED.equals(status);
+    }
 }

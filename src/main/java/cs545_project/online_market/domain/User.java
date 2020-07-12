@@ -60,6 +60,14 @@ public class User {
 	)
 	private List<User> followingSellers = new ArrayList<>();
 
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(
+		name = "buyer_order",
+		joinColumns = {@JoinColumn(name = "buyer_id")},
+		inverseJoinColumns = {@JoinColumn(name = "order_id")}
+	)
+	private List<Order> orders = new ArrayList<>();
+
 	/**
 	 * Store Buyer points. This points will be updated every time Buyer make/cancel/return Order
 	 */
@@ -68,6 +76,10 @@ public class User {
 
 	public void addProduct(Product product) {
 		this.products.add(product);
+	}
+
+	public void addOrder(Order order) {
+		this.orders.add(order);
 	}
 
 	public void removeProduct(Product product) {
