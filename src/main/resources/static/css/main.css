@@ -36,3 +36,11 @@
 #main-body-content {
     min-height: 600px;
 }
+
+.cus-text-light {
+    color: #777;
+}
+
+.price-text {
+    font-size: 14px;
+}

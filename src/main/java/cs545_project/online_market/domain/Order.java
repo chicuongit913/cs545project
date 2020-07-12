@@ -50,6 +50,8 @@ public class Order {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedDate;
 
+    private String receiver;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinTable(name = "order_shipping")
     private ShippingAddress shippingAddress;
