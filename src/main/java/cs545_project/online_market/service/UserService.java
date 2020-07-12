@@ -11,11 +11,13 @@ import java.util.Optional;
 
 public interface UserService extends FieldValueExists{
     Optional<User> findByUsername(String userName);
-    User followSeller(FollowSellerRequest request);
-    User unFollowSeller(FollowSellerRequest request);
+    User findById(long id);
+    void followSeller(User seller);
+    void unFollowSeller(User seller);
     User addShippingAddress(String buyerUserName, AddressRequest request);
     User addBillingAddress(String buyerUserName, AddressRequest request);
-    public User createUser(UserRequest user, UserRole userRole, int active);
-    public User createSeller(UserRequest userRequest);
-    public User createBuyer(UserRequest userRequest);
+    User createUser(UserRequest user, UserRole userRole, int active);
+    User createSeller(UserRequest userRequest);
+    User createBuyer(UserRequest userRequest);
+    boolean isUserFollowSeller(User seller);
 }

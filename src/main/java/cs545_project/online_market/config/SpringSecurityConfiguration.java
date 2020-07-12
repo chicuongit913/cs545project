@@ -37,6 +37,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/buyer/checkout").hasRole("BUYER")
                 .antMatchers("/buyer/setting").hasRole("BUYER")
+                .antMatchers("/buyer/follow_seller/**").hasRole("BUYER")
 //                .antMatchers("/edit/**").authenticated()
 //                .antMatchers("/delete/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()

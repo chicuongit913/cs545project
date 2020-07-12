@@ -1,5 +1,6 @@
 package cs545_project.online_market.controller.response;
 
+import cs545_project.online_market.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,6 @@ public class ProductResponse {
     private String image;
 
     private List<ReviewResponse> reviews = new ArrayList<>();
+
+    private User seller;
 }

@@ -32,6 +32,14 @@
                class="btn btn-success order-btn shadow"><i
                 class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
           </div>
+          <div class="d-flex flex-row align-items-center mt-3">
+            <span th:text="'Sold by: ' + ${product.seller.lastName}"></span>
+            <a th:if="${user_role} == 'BUYER' or !${user_role}"
+               th:href="${isFollow}?@{/buyer/un_follow_seller/{id}(id = ${product.seller.id})}:
+                                    @{/buyer/follow_seller/{id}(id = ${product.seller.id})}" class="btn btn-sm ml-2">
+              <i th:class="${isFollow}?'text-danger fa fa-heart':'text-muted fa fa-heart'"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>

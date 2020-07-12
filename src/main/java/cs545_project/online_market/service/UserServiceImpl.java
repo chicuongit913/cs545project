@@ -8,6 +8,7 @@ import cs545_project.online_market.domain.BillingAddress;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.UserRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -29,37 +30,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Util util;
+
     @Override
     public Optional<User> findByUsername(String userName) {
         return this.userRepository.findByUsername(userName);
     }
 
     @Override
-    public User followSeller(FollowSellerRequest request) {
-        User buyer = this.userRepository.findByUsername(request.getBuyerUserName())
-            .map(b -> {
-                b.followSeller(
-                    this.userRepository.findByUsername(request.getSellerUserName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid Seller")));
-                return b;
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Invalid Buyer"));
-
-        return this.userRepository.save(buyer);
-    }
-
-    @Override
-    public User unFollowSeller(FollowSellerRequest request) {
-        User buyer = this.userRepository.findByUsername(request.getBuyerUserName())
-            .map(b -> {
-                b.unFollowSeller(
-                    this.userRepository.findByUsername(request.getSellerUserName())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid Seller")));
-                return b;
-            })
-            .orElseThrow(() -> new IllegalArgumentException("Invalid Buyer"));
-
-        return this.userRepository.save(buyer);
+    public User findById(long id) {
+        return this.userRepository.findById(id).isPresent()?
+                this.userRepository.findById(id).get():null;
     }
 
     @Override
@@ -109,6 +91,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void followSeller(User seller) {
+        User user = util.getCurrentUser();
+        if(!isUserFollowSeller(seller)) {
+            user.addFollowSeller(seller);
+            this.userRepository.save(user);
+        }
+    }
+
+    @Override
+    public void unFollowSeller(User seller) {
+        User user = util.getCurrentUser();
+        if(isUserFollowSeller(seller)) {
+            user.removeFollowSeller(seller);
+            this.userRepository.save(user);
+        }
+    }
+
+    @Override
     public User createUser(UserRequest userRequest, UserRole userRole, int active) {
         User user = new User();
 
@@ -140,5 +140,13 @@ public class UserServiceImpl implements UserService {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isUserFollowSeller(User seller) {
+        User user = util.getCurrentUser();
+        if(user == null)
+            return false;
+        return user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
     }
 }

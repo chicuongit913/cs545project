@@ -85,6 +85,14 @@ public class User {
 		this.products.add(product);
 	}
 
+	public void addFollowSeller(User seller) {
+		this.followingSellers.add(seller);
+	}
+
+	public void removeFollowSeller(User seller) {
+		this.followingSellers.remove(seller);
+	}
+
 	public void addOrder(Order order) {
 		this.orders.add(order);
 	}
