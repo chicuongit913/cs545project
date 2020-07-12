@@ -13,10 +13,10 @@ import java.util.ArrayList;
 public interface ProductService {
     void test();
     public void saveProduct(ProductRequest productRequest, String path);
-    public ArrayList<Product> getAll();
+    public ArrayList<Product> getAllProducts();
     public Product findById(Long productId);
     ProductResponse getProductById(Long id);
     public void deleteProduct(Long productId);
-    public void updateProduct(ProductRequest productRequest, String path, Long id);
+    public void updateProduct(ProductRequest productRequest, String path);
     ProductResponse postReview(Long id, ReviewRequest reviewRequest);
 }

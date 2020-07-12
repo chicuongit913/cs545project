@@ -6,6 +6,7 @@ import cs545_project.online_market.controller.response.ProductResponse;
 import cs545_project.online_market.controller.response.ReviewResponse;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.domain.Review;
+import cs545_project.online_market.domain.User;
 import cs545_project.online_market.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -63,7 +65,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ArrayList<Product> getAll() {
+    public ArrayList<Product> getAllProducts() {
+
         return (ArrayList<Product>) productRepository.findAll();
     }
 
@@ -85,18 +88,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(ProductRequest productRequest, String path, Long id) {
+    public void updateProduct(ProductRequest productRequest, String path) {
         Product product = new Product();
 
         product.setImage(path);
-        product.setId(id);
+        product.setId(productRequest.getId());
         product.setName(productRequest.getName());
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
-        product.setCreatedDate(productRequest.getCreatedDate());
-        product.setUpdatedDate(productRequest.getUpdatedDate());
-
+        product.setUpdatedDate(new Date());
 
         productRepository.save(product);
     }

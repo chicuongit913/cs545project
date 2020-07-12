@@ -44,8 +44,9 @@ public class ProductRequest {
 
     private List<Review> reviews = new ArrayList<>();
 
-    @CreationTimestamp
     private Date createdDate;
 
     private Date updatedDate;
+
+    private Long id;
 }

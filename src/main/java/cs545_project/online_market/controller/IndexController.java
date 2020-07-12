@@ -16,7 +16,7 @@ public class IndexController  {
 
     @GetMapping
     public String getHome(Model model){
-        model.addAttribute("products", this.productService.getAll());
+        model.addAttribute("products", this.productService.getAllProducts());
         return "views/index";
     }
 }
