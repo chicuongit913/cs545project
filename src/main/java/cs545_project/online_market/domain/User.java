@@ -3,6 +3,7 @@ package cs545_project.online_market.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -43,20 +44,23 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private UserRole role;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	@OneToMany(mappedBy = "user")
+	@Where(clause="ADDRESS_TYPE='shipping'")
 	private List<ShippingAddress> shippingAddresses = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+	@OneToMany(mappedBy = "user")
+	@Where(clause="ADDRESS_TYPE='billing'")
 	private List<BillingAddress> billingAddresses = new ArrayList<>();
 
 	@OneToMany(mappedBy = "seller")
 	private List<Product> products = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "buyer_following",
 		joinColumns = {@JoinColumn(name = "buyer_id")},
-		inverseJoinColumns = {@JoinColumn(name = "seller_id")}
+		inverseJoinColumns = {@JoinColumn(name = "seller_id")},
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"buyer_id", "seller_id"})}
 	)
 	private List<User> followingSellers = new ArrayList<>();
 
@@ -101,8 +105,6 @@ public class User {
 			", password='" + password + '\'' +
 			", active=" + active +
 			", role=" + role +
-			", shippingAddresses=" + shippingAddresses +
-			", billingAddresses=" + billingAddresses +
 			'}';
 	}
 

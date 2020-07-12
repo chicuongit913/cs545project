@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "address_type", discriminatorType = DiscriminatorType.STRING)
-public abstract class Address {
+public class Address {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)

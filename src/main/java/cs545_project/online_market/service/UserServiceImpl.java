@@ -9,6 +9,7 @@ import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.repository.UserRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@NoArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -26,11 +28,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Optional<User> findByUsername(String userName) {

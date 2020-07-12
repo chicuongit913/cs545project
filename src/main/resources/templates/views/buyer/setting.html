@@ -24,7 +24,143 @@
         </div>
 
         <div class="block-setting-body" >
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            CITY
+                        </th>
+                        <th>
+                            STATE
+                        </th>
+                        <th>
+                            STREET
+                        </th>
+                        <th>
+                            ZIPCODE
+                        </th>
+                        <th>
+                            ACTION
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="address:${user.billingAddresses}">
+                        <td th:text="${address.id}"></td>
+                        <td th:text="${address.city}"></td>
+                        <td th:text="${address.state}"></td>
+                        <td th:text="${address.street}"></td>
+                        <td th:text="${address.zipCode}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" th:href="@{/buyer/address/edit/{id}(id = ${address.id})}" >
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <a class="btn btn-sm btn-danger" th:href="@{/buyer/address/delete/{id}(id = ${address.id})}" >
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    <div class="mt-5 block-setting">
+        <div class="block-setting-header" >
+            <span class="float-left">Shipping Address</span>
+            <a th:href="@{/buyer/billing/address}" class="btn btn-primary float-right">
+                <i class="fa fa-plus"></i> New Shipping Address
+            </a>
+        </div>
+
+        <div class="block-setting-body" >
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        CITY
+                    </th>
+                    <th>
+                        STATE
+                    </th>
+                    <th>
+                        STREET
+                    </th>
+                    <th>
+                        ZIPCODE
+                    </th>
+                    <th>
+                        ACTION
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="address:${user.shippingAddresses}">
+                    <td th:text="${address.id}"></td>
+                    <td th:text="${address.city}"></td>
+                    <td th:text="${address.state}"></td>
+                    <td th:text="${address.street}"></td>
+                    <td th:text="${address.zipCode}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-warning" th:href="@{/buyer/address/edit/{id}(id = ${address.id})}" >
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a class="btn btn-sm btn-danger" th:href="@{/buyer/address/delete/{id}(id = ${address.id})}" >
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-5 block-setting">
+        <div class="block-setting-header" >
+            <span class="float-left">Seller Following</span>
+        </div>
+
+        <div class="block-setting-body" >
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        FIRST NAME
+                    </th>
+                    <th>
+                        LAST NAME
+                    </th>
+                    <th>
+                        EMAIL
+                    </th>
+                    <th>
+                        ACTION
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user:${user.followingSellers}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.firstName}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-danger" th:href="@{/buyer/un-follower/{id}(id = ${user.id})}" >
+                            <i class="fa fa-undo"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
