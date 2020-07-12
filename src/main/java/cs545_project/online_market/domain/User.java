@@ -63,6 +63,7 @@ public class User {
 	/**
 	 * Store Buyer points. This points will be updated every time Buyer make/cancel/return Order
 	 */
+	@Column(nullable = true, columnDefinition="int(1) default '0'")
 	private double points;
 
 	public void addProduct(Product product) {

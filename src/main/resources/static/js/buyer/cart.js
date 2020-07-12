@@ -3,27 +3,42 @@ $(document).ready(function() {
 	$('.order-btn').click(function(event){
 
 		event.preventDefault();
-		var productId = $(this).attr("data");
-
+		let productId = $(this).data("id");
+		let productName = $(this).data("name");
 		$.ajax({
-			url: '/rest/cart/add/' + productId,
+			url: '/buyer/rest/cart/add/' + productId,
 			type: 'PUT',
 			dataType: "json",
 			success: function(response){
-				alert("Product Successfully added to the Cart!");
+				swal({
+					icon: "success",
+					title: "Great!",
+					text: productName + " is added to your card.",
+					buttons: {
+						cancel: "Continue shopping",
+						checkout: "Checkout"
+					}
+				}).then((value) => {
+					switch (value) {
+
+						case "checkout":
+							window.location.href = "/buyer/cart";
+							break;
+					}
+				});;
 			},
-			error: function(){						
-				alert('Error while request..');
+			error: function(){
+				swal("something went wrong!","error");
 			}
 		});
 	});
 	
 	$('.product-remove-btn').click(function(event){
 		event.preventDefault();
-		var productId = $(this).attr("data");
+		var productId = $(this).data("id");
 		
 		$.ajax({
-			url: '/rest/cart/remove/'+ productId,
+			url: '/buyer/rest/cart/remove/'+ productId,
 			type: 'PUT',
 			dataType: "json",
 			success: function (response) {
