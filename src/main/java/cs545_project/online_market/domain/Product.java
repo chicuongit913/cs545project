@@ -51,7 +51,7 @@ public class Product {
      */
     private boolean isInUse;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "product_review",
         joinColumns = {@JoinColumn(name = "product_id")},

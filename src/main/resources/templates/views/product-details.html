@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Product Details</title>
+  <link th:href="@{/css/product-details.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-js">
+  <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+  <div id="product-container">
+    <div class="d-flex flex-row mt-5 mb-5">
+      <div class="col-5 p-2">
+        <div class="card" style="height: 400px;">
+          <img th:src="${product.image}" class="card-img-top" alt="...">
+        </div>
+      </div>
+      <div class="col-7 pl-4 pt-5">
+        <div class="d-flex flex-column">
+          <h1 th:text="${product.name}"></h1>
+          <h3 th:text="'$' + ${product.price}"></h3>
+          <!--          <h5>Category: <span class="cus-text-light">Phone</span></h5>-->
+          <h5>Availability: <span class="cus-text-light">In Stock</span></h5>
+          <div class="border-top border-grey border-bottom">
+            <p th:text="${product.description}" class="cus-text-light mt-2"></p>
+          </div>
+          <div class="d-flex flex-row align-items-center mt-3">
+            <!--            <span>Quantity: </span>-->
+            <!--            <input size="2" type="number" class="form-control ml-2 w-25">-->
+            <a href="#" th:data-name="${product.name}" th:data-id="${product.id}"
+               class="btn btn-success order-btn shadow"><i
+                class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row mt-5 mb-5">
+      <div class="d-flex flex-column w-100">
+        <div class="border-top border-grey border-bottom mb-3">
+          <h1>Reviews</h1>
+        </div>
+        <div class="row">
+          <div class="review-container col-6">
+            <div th:each="review : ${product.reviews}" class="border-bottom border-light mb-2">
+              <div class="d-flex flex-row">
+                <div class="avatar">
+                  <img th:src="@{/images/user-avatar.png}" alt="">
+                </div>
+                <div class="col-9">
+                  <div>
+                    <h4>John T</h4>
+                    <div>
+                      <span class="cus-text-light" th:text="${review.createdDate}"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-row cus-text-light">
+                <p th:text="${review.text}"></p>
+              </div>
+            </div>
+            <div th:if="${product.reviews.isEmpty()}">
+              <h3 class="cus-text-light">No available review</h3>
+            </div>
+          </div>
+          <div class="post-review-form col-6">
+            <form action="#" th:action="@{/product/{id}/review(id=${product.id})}" method="post"
+                  th:object="${reviewRequest}">
+              <h4>Post a Review</h4>
+              <div>
+                <span class="text-danger" th:if="${#fields.hasErrors('review')}" th:errors="*{review}"></span>
+              </div>
+              <textarea alt="Enter review" class="form-control" rows="4" name="review"></textarea>
+              <div class="d-flex justify-content-end mt-2">
+                <input type="submit" value="Post" class="btn btn-secondary rounded shadow"/>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

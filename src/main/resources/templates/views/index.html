@@ -19,9 +19,19 @@
         <div class="card shadow">
           <img th:src="${prod.image}" class="card-img-top" alt="...">
           <div class="card-body">
-            <span class="badge badge-light text-success p-2" th:text="${prod.price}"></span>
-            <h5 class="card-title" th:text="${prod.name}"></h5>
-            <a href="#" th:data-name="${prod.name}" th:data-id="${prod.id}" class="btn btn-primary order-btn"><i class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
+            <div class="d-flex justify-content-center">
+              <span class="badge badge-light text-danger p-2 price-text" th:text="'$' + ${prod.price}"></span>
+            </div>
+            <div class="d-flex justify-content-center">
+              <a th:href="@{/product/{id}(id=${prod.id})}" class="text-decoration-none">
+                <h5 class="card-title" th:text="${prod.name}"></h5>
+              </a>
+            </div>
+            <div class="d-flex justify-content-center">
+              <a href="#" th:data-name="${prod.name}" th:data-id="${prod.id}"
+                 class="btn btn-success order-btn shadow"><i
+                  class="fa fa-shopping-cart mr-1"></i>Add to Cart</a>
+            </div>
           </div>
         </div>
       </div>
