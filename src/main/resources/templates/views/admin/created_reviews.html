@@ -7,9 +7,6 @@
     <title>Pending reviews</title>
 </head>
 <body>
-<!--<th:block layout:fragment="page-custom-js">-->
-<!--    <script type="text/javascript" th:src="@{/js/admin.js}"></script>-->
-<!--</th:block>-->
 <div id="contents" class="row" layout:fragment="main-content">
     <div class="d-flex flex-column mt-4 mb-4">
         <div class="h4">Pending reviews</div>
@@ -49,8 +46,8 @@
                 <td th:text="${review.text}"></td>
                 <td>
                     <div class="d-flex flex-row">
-                        <a href="#" class="shadow btn btn-success mr-1" th:data-review-id="${review.id}">Post</a>
-                        <a href="#" class="shadow btn btn-danger" th:data-review-id="${review.id}">Decline</a>
+                        <a th:href="@{/admin/post-review/{id}(id=${review.id})}" class="shadow btn btn-success mr-1">Post</a>
+                        <a th:href="@{/admin/decline-review/{id}(id=${review.id})}" class="shadow btn btn-danger">Decline</a>
                     </div>
                 </td>
             </tr>

@@ -54,15 +54,17 @@ public class AdminController {
         return "views/admin/created_reviews";
     }
 
-    @PutMapping("/post-review/{reviewId}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void postReview(@PathVariable("reviewId") long reviewId) throws NotFoundException {
+    @GetMapping("/post-review/{reviewId}")
+    public String postReview(@PathVariable("reviewId") long reviewId, HttpServletRequest request) throws NotFoundException {
         reviewService.postReview(reviewId);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 
-    @PutMapping("/decline-review/{reviewId}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void declineReview(@PathVariable("reviewId") long reviewId) throws NotFoundException {
+    @GetMapping("/decline-review/{reviewId}")
+    public String declineReview(@PathVariable("reviewId") long reviewId, HttpServletRequest request) throws NotFoundException {
         reviewService.declineReview(reviewId);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 }
