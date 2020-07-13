@@ -18,57 +18,63 @@
       <div class="col-12">
         <h2>Your orders</h2>
       </div>
+
+      <div class="d-flex justify-content-between flex-wrap mt-5 mb-3">
+        <span class="col-1 font-weight-bolder">Order</span>
+        <span class="col-2 font-weight-bolder" >Status</span>
+        <span class="col-2 font-weight-bolder">Total</span>
+        <span class="col-2 font-weight-bolder">Ship to</span>
+        <span class="col-2 font-weight-bolder">Created</span>
+        <span class="col-3 font-weight-bolder">Action</span>
+      </div>
       <div th:each="order : ${orders}" class="col-12 pt-2 pb-2">
-        <div class="card shadow">
+        <div class="card">
           <div class="card-header">
             <div class="d-flex justify-content-between flex-wrap">
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light" th:text="${order.status}"></span>
-                </div>
-                <div>
-                  <span class="cus-text-light" th:text="${order.updatedDate}"></span>
-                </div>
-              </div>
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light">TOTAL</span>
-                </div>
-                <div>
-                  <span class="cus-text-light" th:text="${order.total}"></span>
-                </div>
-              </div>
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light">SHIP TO</span>
-                </div>
-                <div>
-                  <span class="cus-text-light" th:text="${order.receiver}"></span>
-                </div>
-              </div>
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light" th:text="'ORDER' + ${order.orderCode}"></span>
-                </div>
-                <div>
-                  <a href="#">Order Details</a>
-                  <a href="#" class="border-left border-grey pl-2">Invoice</a>
-                </div>
-              </div>
+              <span class="col-1" th:text="'#'+${orderStat.count}"></span>
+
+              <span th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}" class="col-2" >
+                    <a href="#" class="btn btn-sm btn-outline-primary" th:text="${order.status}"></a>
+                  </span>
+              <span th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}" class="col-2" >
+                    <a href="#" class="btn btn-sm btn-outline-danger" th:text="${order.status}"></a>
+                  </span>
+              <span th:unless="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}
+              or ${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}" class="col-2" >
+                    <a href="#" class="btn btn-sm btn-outline-info" th:text="${order.status}"></a>
+              </span>
+
+              <span class="col-2" th:text="'$ ' + ${order.total}"></span>
+                  <span class="col-2" th:text="${order.receiver}"></span>
+                  <span class="col-2" th:text="${order.createdDate}"></span>
+                  <span class="col-3">
+                    <a class="btn btn-info btn-sm text-white" data-toggle="collapse" th:data-target="'#detail_order_' + ${order.hashCode()}" aria-expanded="true">
+                      <i class="fa fa-expand" ></i>
+                    </a>
+                    <a class="btn btn-primary btn-sm" target="_blank" th:href="@{/buyer/orders/print/{id}(id = ${order.getId()})}">
+                      <i class="fa fa-print" ></i>
+                    </a>
+                    <a th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                       class="btn btn-danger btn-sm" th:href="@{/buyer/orders/cancel/{id}(id = ${order.getId()})}">
+                      <i class="fa fa-remove" ></i>
+                    </a>
+                  </span>
             </div>
           </div>
-          <div class="card-body">
-            <div class="d-flex flex-column">
-              <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap">
-                <div class="col-md-2">
-                  <img class="prod-image" th:src="${item.image}">
-                </div>
-                <div class="col-md-10 flex-column">
-                  <div>
-                    <a th:href="@{/product/{id}(id=${item.productId})}" th:text="${item.productName}"></a>
+          <div th:id="'detail_order_' + ${order.hashCode()}" class="collapse">
+            <div class="card-body">
+              <div class="d-flex flex-column">
+                <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap">
+                  <div class="col-md-2">
+                    <img class="prod-image" th:src="${item.image}">
                   </div>
-                  <div>
-                    <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${item.price}"></span>
+                  <div class="col-md-10 flex-column">
+                    <div>
+                      <a th:href="@{/product/{id}(id=${item.productId})}" th:text="${item.productName}"></a>
+                    </div>
+                    <div>
+                      <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${item.price}"></span>
+                    </div>
                   </div>
                 </div>
               </div>

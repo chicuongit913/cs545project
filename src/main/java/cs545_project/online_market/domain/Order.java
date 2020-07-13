@@ -64,6 +64,14 @@ public class Order {
     @JoinTable(name = "order_billing")
     private BillingAddress billingAddress;
 
+    @ManyToOne
+    @JoinTable(
+            name = "buyer_order",
+            joinColumns = {@JoinColumn(name = "order_id")},
+            inverseJoinColumns = {@JoinColumn(name = "buyer_id")}
+    )
+    private User buyer;
+
     public boolean canCancel() {
         return OrderStatus.NEW.equals(status);
     }

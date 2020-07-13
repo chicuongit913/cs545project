@@ -64,12 +64,7 @@ public class User {
 	)
 	private List<User> followingSellers = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(
-		name = "buyer_order",
-		joinColumns = {@JoinColumn(name = "buyer_id")},
-		inverseJoinColumns = {@JoinColumn(name = "order_id")}
-	)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "buyer")
 	private List<Order> orders = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user")

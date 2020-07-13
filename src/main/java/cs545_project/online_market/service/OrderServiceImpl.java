@@ -4,11 +4,8 @@ import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.OrderItemResponse;
 import cs545_project.online_market.controller.response.OrderResponse;
-import cs545_project.online_market.domain.BillingAddress;
-import cs545_project.online_market.domain.Order;
-import cs545_project.online_market.domain.OrderDetails;
-import cs545_project.online_market.domain.ShippingAddress;
-import cs545_project.online_market.domain.User;
+import cs545_project.online_market.domain.*;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.OrderRepository;
 import cs545_project.online_market.repository.ProductRepository;
 import cs545_project.online_market.repository.UserRepository;
@@ -31,6 +28,9 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
     private OrderRepository orderRepository;
     private Hashids hashids;
+
+    @Autowired
+    Util util;
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Hashids hashids) {
@@ -70,11 +70,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponse> getAllOrders(String username) {
-        User buyer = userRepository.findByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid user"));
-
-        return buyer.getOrders()
+    public List<OrderResponse> getOrdersOfCurrentUser() {
+        return util.getCurrentUser().getOrders()
             .stream()
             .map(this::mapToOrderResponse)
             .collect(Collectors.toList());
@@ -134,6 +131,10 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setCredit(order.getCredit());
         orderResponse.setPoints(order.getPoints());
         orderResponse.setTotal(order.total());
+        orderResponse.setReceiver(order.getReceiver());
+        orderResponse.setStatus(order.getStatus());
+        orderResponse.setCreatedDate(order.getCreatedDate());
+        orderResponse.setId(order.getId());
         orderResponse.setOrderItems(
             order.getOrderDetails()
                 .stream()
@@ -162,5 +163,14 @@ public class OrderServiceImpl implements OrderService {
         AddressResponse response = new AddressResponse();
         BeanUtils.copyProperties(shippingAddress, response);
         return response;
+    }
+
+    public Order findById(long id) {
+        return this.orderRepository.findById(id).isPresent()?this.orderRepository.findById(id).get():null;
+    }
+
+    public Order cancelOrder(Order order) {
+        order.setStatus(OrderStatus.CANCELED);
+        return  this.orderRepository.save(order);
     }
 }

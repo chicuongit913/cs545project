@@ -1,8 +1,11 @@
 package cs545_project.online_market.controller.buyer;
 
+import cs545_project.online_market.domain.Order;
+import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.exception.UserNotFoundException;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.CartService;
 import cs545_project.online_market.service.OrderService;
 import cs545_project.online_market.service.UserService;
@@ -24,6 +27,9 @@ public class BuyerController {
     private UserService userService;
 
     @Autowired
+    Util util;
+
+    @Autowired
     public BuyerController(CartService cartService, OrderService orderService) {
         this.orderService = orderService;
     }
@@ -35,7 +41,7 @@ public class BuyerController {
 
     @GetMapping("/orders")
     public String viewOrders(HttpServletRequest request, Model model) {
-        model.addAttribute("orders", orderService.getAllOrders((String) request.getAttribute("user_name")));
+        model.addAttribute("orders", orderService.getOrdersOfCurrentUser());
         return "/views/buyer/orders";
     }
 
@@ -59,6 +65,23 @@ public class BuyerController {
             throw new IllegalArgumentException(new UserNotFoundException(id));
 
         userService.unFollowSeller(seller);
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
+    }
+
+    @GetMapping("/orders/cancel/{id}")
+    public String cancelOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) {
+        Order order = orderService.findById(id);
+
+        if (order == null) {
+            return "redirect:/buyer/orders";
+        }
+
+        if(!order.getBuyer().equals(util.getCurrentUser()) || order.getStatus() != OrderStatus.NEW)
+             return "redirect:/auth/denied";
+
+        orderService.cancelOrder(order);
+
         String referer = request.getHeader("Referer");
         return "redirect:"+ referer;
     }
