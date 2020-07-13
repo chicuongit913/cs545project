@@ -1,16 +1,13 @@
 package cs545_project.online_market.controller.buyer;
 
-<<<<<<< HEAD
 import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.OrderStatus;
-=======
 import cs545_project.online_market.controller.request.CartRequest;
 import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.CardResponse;
 import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.domain.Cart;
->>>>>>> a59569342688b241ae998072450a4352f082a91e
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.exception.UserNotFoundException;
@@ -38,14 +35,10 @@ public class BuyerController {
     private UserService userService;
 
     @Autowired
-<<<<<<< HEAD
     Util util;
 
     @Autowired
-    public BuyerController(CartService cartService, OrderService orderService) {
-=======
     public BuyerController(CartService cartService, OrderService orderService, UserService userService) {
->>>>>>> a59569342688b241ae998072450a4352f082a91e
         this.orderService = orderService;
         this.cartService = cartService;
         this.userService = userService;
@@ -151,7 +144,6 @@ public class BuyerController {
         String referer = request.getHeader("Referer");
         return "redirect:"+ referer;
     }
-<<<<<<< HEAD
 
     @GetMapping("/orders/cancel/{id}")
     public String cancelOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) {
@@ -169,8 +161,4 @@ public class BuyerController {
         String referer = request.getHeader("Referer");
         return "redirect:"+ referer;
     }
-
-
-=======
->>>>>>> a59569342688b241ae998072450a4352f082a91e
 }
