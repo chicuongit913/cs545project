@@ -1,7 +1,16 @@
 package cs545_project.online_market.controller.buyer;
 
+<<<<<<< HEAD
 import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.OrderStatus;
+=======
+import cs545_project.online_market.controller.request.CartRequest;
+import cs545_project.online_market.controller.request.OrderRequest;
+import cs545_project.online_market.controller.response.AddressResponse;
+import cs545_project.online_market.controller.response.CardResponse;
+import cs545_project.online_market.controller.response.CheckoutUserResponse;
+import cs545_project.online_market.domain.Cart;
+>>>>>>> a59569342688b241ae998072450a4352f082a91e
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.exception.UserNotFoundException;
@@ -14,29 +23,103 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/buyer")
 public class BuyerController {
     private OrderService orderService;
-
-    @Autowired
+    private CartService cartService;
     private UserService userService;
 
     @Autowired
+<<<<<<< HEAD
     Util util;
 
     @Autowired
     public BuyerController(CartService cartService, OrderService orderService) {
+=======
+    public BuyerController(CartService cartService, OrderService orderService, UserService userService) {
+>>>>>>> a59569342688b241ae998072450a4352f082a91e
         this.orderService = orderService;
+        this.cartService = cartService;
+        this.userService = userService;
     }
 
-    @GetMapping("/checkout")
-    public String getCheckout() {
+    @GetMapping("/cart")
+    public String get(HttpServletRequest request, Model model) {
+        String cartId = Util.extractCartId(request);
+        Cart cart = cartService.read(cartId);
+        if (cart == null) {
+            cartId = request.getSession(true).getId();
+            cart = new Cart(cartId);
+            cartService.create(cart);
+            Util.updateCartId(request, cartId);
+        }
+        model.addAttribute("cart", cart);
+
+        return "/views/buyer/cart";
+    }
+
+    @PostMapping("/cart")
+    public String checkAvailability(HttpServletRequest request, CartRequest cartRequest, Model model) {
+        String cartId = Util.extractCartId(request);
+        Cart cart = null;
+        try {
+            cart = cartService.checkAndUpdateCart(cartId, cartRequest);
+            model.addAttribute("cart_message", "All items are available and Total is updated!");
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("cart_errors", ex.getMessage());
+            cart = cartService.read(cartId);
+        }
+
+        model.addAttribute("cart", cart);
+        return "/views/buyer/cart";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String getCheckout(HttpServletRequest request, CartRequest cartRequest, OrderRequest orderRequest, Model model) {
+        String cartId = Util.extractCartId(request);
+        try {
+            cartService.checkAndUpdateCart(cartId, cartRequest);
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("cart_errors", ex.getMessage());
+            model.addAttribute("cart", cartService.read(cartId));
+            return "/views/buyer/cart";
+        }
+
+        setupCheckoutData(orderRequest, model);
         return "views/buyer/checkout";
+    }
+
+    private void setupCheckoutData(OrderRequest orderRequest, Model model) {
+        CheckoutUserResponse userForCheckout = userService.getUserForCheckout();
+        orderRequest.setReceiver(userForCheckout.getName());
+        orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+        orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+        orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
+        model.addAttribute("checkout_user", userForCheckout);
+    }
+
+    @PostMapping("/order")
+    public String placeOrder(@Valid OrderRequest orderRequest, HttpServletRequest request, Model model) {
+        try {
+            String cartId = Util.extractCartId(request);
+            orderService.placeOrder(orderRequest, cartService.read(cartId));
+            cartService.emptyCart(cartId);
+            model.addAttribute("cart", cartService.read(cartId));
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("place_order_errors", ex.getMessage());
+            setupCheckoutData(orderRequest, model);
+            return "views/buyer/checkout";
+        }
+
+        return "/views/buyer/cart";
     }
 
     @GetMapping("/orders")
@@ -68,6 +151,7 @@ public class BuyerController {
         String referer = request.getHeader("Referer");
         return "redirect:"+ referer;
     }
+<<<<<<< HEAD
 
     @GetMapping("/orders/cancel/{id}")
     public String cancelOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) {
@@ -87,4 +171,6 @@ public class BuyerController {
     }
 
 
+=======
+>>>>>>> a59569342688b241ae998072450a4352f082a91e
 }

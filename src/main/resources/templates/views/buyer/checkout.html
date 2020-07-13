@@ -3,18 +3,127 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Home Page</title>
+  <title>Checkout</title>
 </head>
 <body>
 
 <th:block layout:fragment="page-custom-js">
-    <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+  <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
 </th:block>
 
 <div class="col" layout:fragment="main-content">
-    <div class="row mt-5">
-        <h2>Checkout Page</h2>
+  <div class="flex-column mt-5 mb-5" th:if="${checkout_user}">
+    <div class="mb-3 cus-text-light">
+      <h2>Process To Checkout</h2>
     </div>
+    <form action="#" th:action="@{/buyer/order}" th:object="${orderRequest}" method="post">
+      <div id="accordion">
+        <div class="card mb-2">
+          <div class="card-header" id="shippingPane">
+            <h5 class="mb-0">
+            <span class="btn btn-link" data-toggle="collapse" data-target="#shippingPaneContent" aria-expanded="true"
+                  aria-controls="shippingPaneContent">
+              Shipping Information
+            </span>
+            </h5>
+          </div>
+
+          <div id="shippingPaneContent" class="collapse show" aria-labelledby="shippingPane" data-parent="#accordion">
+            <div class="card-body">
+              <div class="d-flex flex-column flex-nowrap">
+                <div class="mb-2">
+                  <span class="mr-2 text-nowrap">Receiver Name: </span>
+                  <input class="form-control col-md-6" name="receiver" th:field="*{receiver}">
+                </div>
+                <div class="mb-2">
+                  <span class="mr-2">Address: </span>
+                </div>
+                <div th:each="address : ${checkout_user.shippingAddresses}" class="card shadow mb-2">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-start align-items-center">
+                      <input class="mr-2" type="radio" th:field="*{shippingAddress}"
+                             th:value="${address.id}">
+                      <label class="m-0" th:for="${#ids.prev('shippingAddress')}"
+                             th:text="${address.beautyAddress}"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-2">
+          <div class="card-header" id="paymentPane">
+            <h5 class="mb-0">
+            <span class="btn btn-link collapsed" data-toggle="collapse" data-target="#paymentPaneContent"
+                  aria-expanded="false" aria-controls="paymentPaneContent">
+              Payment
+            </span>
+            </h5>
+          </div>
+          <div id="paymentPaneContent" class="collapse" aria-labelledby="paymentPane" data-parent="#accordion">
+            <div class="card-body">
+              <div class="mb-2 d-flex justify-content-start align-items-center">
+                <label class="m-0 mr-2 text-nowrap" th:for="${#ids.next('applyCoupon')}">Apply Available Points:</label>
+                <input type="checkbox" th:value="true" th:field="*{applyCoupon}">
+              </div>
+              <div class="d-flex flex-row flex-wrap">
+                <div th:each="card : ${checkout_user.cards}" class="card shadow mb-2 mr-2">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-start">
+                      <input type="radio" th:field="*{paymentCard}" th:value="${card.id}">
+                      <label class="m-0 ml-2 text-nowrap" th:for="${#ids.prev('paymentCard')}">
+                        <div class="d-flex flex-column">
+                          <div>
+                            <span class="text-nowrap cus-text-light" th:text="${card.cardNumber}"></span>
+                          </div>
+                          <div>
+                            <span th:text="${card.name}"></span>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mb-2">
+          <div class="card-header" id="billingPane">
+            <h5 class="mb-0">
+            <span class="btn btn-link collapsed" data-toggle="collapse" data-target="#billingPaneContent"
+                  aria-expanded="false" aria-controls="billingPaneContent">
+              Billing Information
+            </span>
+            </h5>
+          </div>
+          <div id="billingPaneContent" class="collapse" aria-labelledby="billingPane" data-parent="#accordion">
+            <div class="card-body">
+              <div class="d-flex flex-column flex-nowrap">
+                <div th:each="address : ${checkout_user.billingAddresses}" class="card shadow mb-2">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-start align-items-center">
+                      <input class="mr-2" type="radio" th:field="*{billingAddress}"
+                             th:value="${address.id}">
+                      <label class="m-0" th:for="${#ids.prev('billingAddress')}"
+                             th:text="${address.beautyAddress}"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div th:if="${place_order_errors}" class="text-danger p-2">
+        <span th:text="${place_order_errors}"></span>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="col-4 btn btn-success rounded shadow text-capitalize">Place order</button>
+      </div>
+    </form>
+  </div>
 </div>
 </body>
 </html>

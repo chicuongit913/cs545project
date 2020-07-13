@@ -5,11 +5,13 @@ import cs545_project.online_market.controller.request.ProductRequest;
 import cs545_project.online_market.controller.response.ProductResponse;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.domain.User;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -26,39 +28,26 @@ import java.util.stream.IntStream;
 @Controller
 public class SellerController {
 
+
+    private Util util;
     private ProductService productService;
     private MultipartFile productImage;
-    private String rootDirectory = "C:\\";
+    private String rootDirectory = System.getProperty("user.dir") + "\\images\\";
 
     @Autowired
-    public SellerController(ProductService productService) {
+    public SellerController(Util util, ProductService productService) {
+        this.util = util;
         this.productService = productService;
     }
 
 
+
     @GetMapping("/seller")
     public String getPage(Model model) {
-        ArrayList<Product> products = productService.getAll();
-//        model.addAttribute("sellerProducts", products);
-        model.addAttribute("sellerProducts", createDummyProducts());
+        ArrayList<Product> products = productService.getAllProducts();
+        model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
-
-    private List<ProductResponse> createDummyProducts() {
-        return IntStream.range(1, 12)
-                .mapToObj(n -> {
-                    ProductResponse productResponse = new ProductResponse();
-                    productResponse.setName("Apple 15.4\" MacBook Pro w/Touch Bar (Mid 2019)");
-                    productResponse.setDescription("About this item\n" +
-                            "15.4-inch (diagonal) LED-backlit display with IPS technology; 2880-by-1800 resolution at 220 pixels per inch with support for millions of colors");
-                    productResponse.setPrice(2223 * n);
-                    productResponse.setId(n);
-                    productResponse.setImage("https://m.media-amazon.com/images/I/41795QZGfYL._AC_SL260_.jpg");
-                    return productResponse;
-                })
-                .collect(Collectors.toList());
-    }
-
 
     @GetMapping("/seller/addProduct")
     public String getAll(Model model) {
@@ -78,8 +67,8 @@ public class SellerController {
         if (productImage != null && !productImage.isEmpty())
         {
             try {
-                productImage.transferTo(new File(rootDirectory + "images\\" + product.getName()+".png"));
-                String path = rootDirectory + "images\\" + product.getName()+".png";
+                productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
+                String path = rootDirectory + product.getName()+".png";
                 productService.saveProduct(product, path);
 
             } catch (IOException e) {
@@ -107,9 +96,10 @@ public class SellerController {
         if (productImage != null && !productImage.isEmpty())
         {
             try {
-                productImage.transferTo(new File(rootDirectory + "images\\" + product.getName()+".png"));
-                String path = rootDirectory + "images\\" + product.getName()+".png";
-                productService.updateProduct(product, path, productId);
+                productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
+                String path = rootDirectory + product.getName()+".png";
+                product.setId(productId);
+                productService.updateProduct(product, path);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -120,13 +110,18 @@ public class SellerController {
 
 
     @GetMapping(value = "/seller/delete-product/{productId}")
-    public String updateProduct(@PathVariable long productId) {
+    public String updateProduct(@PathVariable long productId, Model model) {
        Product product =  productService.findById(productId);
-       if (!product.canDelete()){
+
+       if (product.isInUse() == true){
            System.out.println("can not deleted");
+           model.addAttribute("inUse","Can not deleted already in use");
+
        }
 
+       else
         productService.deleteProduct(productId);
         return "views/seller/SellerHome";
     }
+
 }

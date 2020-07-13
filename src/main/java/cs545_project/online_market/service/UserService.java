@@ -3,6 +3,7 @@ package cs545_project.online_market.service;
 import cs545_project.online_market.controller.request.AddressRequest;
 import cs545_project.online_market.controller.request.FollowSellerRequest;
 import cs545_project.online_market.controller.request.UserRequest;
+import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.validation.uniqueKey.FieldValueExists;
@@ -20,4 +21,5 @@ public interface UserService extends FieldValueExists{
     User createSeller(UserRequest userRequest);
     User createBuyer(UserRequest userRequest);
     boolean isUserFollowSeller(User seller);
+    CheckoutUserResponse getUserForCheckout();
 }

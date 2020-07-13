@@ -17,7 +17,7 @@ public class Cart {
 	private int quantity = 0;
 
 	public Cart() {
-		cartItems = new HashMap<Long, CartItem>();
+		cartItems = new HashMap<>();
 	}
 
 	public Cart(String cartId) {
@@ -40,6 +40,12 @@ public class Cart {
 	public void removeCartItem(CartItem item) {
 		long productId = item.getProduct().getId();
 		cartItems.remove(productId);
+		updateGrandTotal();
+	}
+
+	public void updateCartItem(long productId, int quantity) {
+		CartItem item = cartItems.get(productId);
+		item.setQuantity(quantity);
 		updateGrandTotal();
 	}
 
@@ -83,5 +89,10 @@ public class Cart {
 	public String toString() {
 		return "Cart [cartId=" + cartId + ", cartItems=" + cartItems + ", grandTotal=" + grandTotal + "]";
 	}
-	
+
+    public void empty() {
+		cartItems = new HashMap<>();
+		grandTotal = 0;
+		quantity = 0;
+    }
 }
