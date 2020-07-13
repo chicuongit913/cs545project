@@ -74,6 +74,7 @@ public class OrderServiceImpl implements OrderService {
         );
         buyer.setPoints(remainPoints * 100 + credit);
         order.setCredit(credit);
+        order.setBuyer(buyer);
         buyer.addOrder(order);
         userRepository.save(buyer); // Save Order
         productRepository.saveAll(

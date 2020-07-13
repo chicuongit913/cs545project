@@ -22,7 +22,7 @@
   <section class="container">
     <div class="mt-5">
       <form th:action="@{/buyer/cart/checkout}" method="post">
-        <table id="cart_table" class="table table-hover">
+        <table id="cart_table" class="table table-hover table-responsive">
           <thead>
           <tr>
             <th>Name</th>
@@ -36,10 +36,10 @@
           <tr th:each="item, itemStat : ${cart.cartItems}">
             <td>
               <div class="d-flex flex-row">
-                <div class="col-2 pl-0">
+                <div class="col-md-2 pl-0">
                   <img class="product-image" th:src="${item.value.product.image}"/>
                 </div>
-                <div class="c">
+                <div class="text-nowrap">
                   <h5 th:text="${item.value.product.name}"></h5>
                 </div>
               </div>

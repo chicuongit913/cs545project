@@ -96,9 +96,9 @@ public class BuyerController {
         CheckoutUserResponse userForCheckout = userService.getUserForCheckout();
         if (userForCheckout != null) {
             orderRequest.setReceiver(userForCheckout.getName());
-            orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
-            orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
-            orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
+            orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).filter(l -> !l.isEmpty()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+            orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).filter(l -> !l.isEmpty()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+            orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).filter(l -> !l.isEmpty()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
         }
         model.addAttribute("checkout_user", userForCheckout);
     }
