@@ -38,6 +38,11 @@
                 <div class="mb-2">
                   <span class="mr-2">Address: </span>
                 </div>
+                <div class="text-info mb-2"
+                     th:if="${checkout_user.shippingAddresses == null || checkout_user.shippingAddresses.isEmpty()}">
+                  <h5>Please register an address to be able
+                    to place order. Please click <a th:href="@{/buyer/setting}">here</a> to Register new Address</h5>
+                </div>
                 <div th:each="address : ${checkout_user.shippingAddresses}" class="card shadow mb-2">
                   <div class="card-body">
                     <div class="d-flex justify-content-start align-items-center">
@@ -68,6 +73,12 @@
                 <input type="checkbox" th:value="true" th:field="*{applyCoupon}">
               </div>
               <div class="d-flex flex-row flex-wrap">
+                <div class="text-info mb-2"
+                     th:if="${checkout_user.cards == null || checkout_user.cards.isEmpty()}">
+                  <h5>Please register a payment card to be able
+                    to place order. Please click <a th:href="@{/buyer/setting}">here</a> to Register new Payment
+                    Card</h5>
+                </div>
                 <div th:each="card : ${checkout_user.cards}" class="card shadow mb-2 mr-2">
                   <div class="card-body">
                     <div class="d-flex justify-content-start">
@@ -101,6 +112,11 @@
           <div id="billingPaneContent" class="collapse" aria-labelledby="billingPane" data-parent="#accordion">
             <div class="card-body">
               <div class="d-flex flex-column flex-nowrap">
+                <div class="text-info mb-2"
+                     th:if="${checkout_user.billingAddresses == null || checkout_user.billingAddresses.isEmpty()}">
+                  <h5>Please register an address to be able
+                    to place order. Please click <a th:href="@{/buyer/setting}">here</a> to Register new Address</h5>
+                </div>
                 <div th:each="address : ${checkout_user.billingAddresses}" class="card shadow mb-2">
                   <div class="card-body">
                     <div class="d-flex justify-content-start align-items-center">
@@ -120,7 +136,22 @@
         <span th:text="${place_order_errors}"></span>
       </div>
       <div class="d-flex justify-content-end">
-        <button type="submit" class="col-4 btn btn-success rounded shadow text-capitalize">Place order</button>
+        <span class="col-4 btn btn-success rounded disabled shadow text-capitalize"
+              th:if="${checkout_user.billingAddresses == null
+              || checkout_user.billingAddresses.isEmpty()
+              || checkout_user.shippingAddresses == null
+              || checkout_user.shippingAddresses.isEmpty()
+              || checkout_user.cards == null
+              || checkout_user.cards.isEmpty()}">
+          Place order
+        </span>
+        <button type="submit" th:if="${checkout_user.billingAddresses == null
+              && !checkout_user.billingAddresses.isEmpty()
+              && checkout_user.shippingAddresses == null
+              && !checkout_user.shippingAddresses.isEmpty()
+              && checkout_user.cards == null
+              && !checkout_user.cards.isEmpty()}"
+                class="col-4 btn btn-success rounded shadow text-capitalize">Place order</button>
       </div>
     </form>
   </div>
