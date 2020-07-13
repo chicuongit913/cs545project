@@ -14,4 +14,5 @@ public interface OrderService {
     Order findById(long id);
     Order cancelOrder(Order order);
     OrderResponse placeOrder(OrderRequest request, Cart cart);
+    String generateInvoiceOrder(Order order);
 }

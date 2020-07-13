@@ -2,6 +2,7 @@ package cs545_project.online_market.controller.response;
 
 import cs545_project.online_market.domain.OrderDetails;
 import cs545_project.online_market.domain.OrderStatus;
+import cs545_project.online_market.domain.User;
 import lombok.Data;
 
 import java.util.Date;
@@ -24,4 +25,5 @@ public class OrderResponse {
     private AddressResponse shippingAddress;
     private AddressResponse billingAddress;
     private List<OrderItemResponse> orderItems;
+    private User buyer;
 }

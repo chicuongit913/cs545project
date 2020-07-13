@@ -1,5 +1,6 @@
 package cs545_project.online_market.controller.buyer;
 
+import com.lowagie.text.DocumentException;
 import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.controller.request.CartRequest;
@@ -17,6 +18,11 @@ import cs545_project.online_market.service.CartService;
 import cs545_project.online_market.service.OrderService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +30,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.*;
 import java.util.Optional;
 
 @Controller
@@ -171,5 +179,40 @@ public class BuyerController {
 
         String referer = request.getHeader("Referer");
         return "redirect:"+ referer;
+    }
+
+    @GetMapping("/orders/print/{id}")
+    public ResponseEntity<InputStreamResource> printInvoiceOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) throws IOException, DocumentException {
+        Order order = orderService.findById(id);
+
+//        if (order == null) {
+//            return "redirect:/buyer/orders";
+//        }
+//
+//        if(!order.getBuyer().equals(util.getCurrentUser()))
+//            return "redirect:/auth/denied";
+
+        String  htmlOder = this.orderService.generateInvoiceOrder(order);
+
+        String outputFolder = "invoice"+id+".pdf";
+        OutputStream outputStream = new FileOutputStream(outputFolder);
+
+        ITextRenderer renderer = new ITextRenderer();
+        renderer.setDocumentFromString(htmlOder);
+        renderer.layout();
+        renderer.createPDF(outputStream);
+        outputStream.close();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename="+"invoice"+id+".pdf");
+
+        File file = new File( outputFolder);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
     }
 }

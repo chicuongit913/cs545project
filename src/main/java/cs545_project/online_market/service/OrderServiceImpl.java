@@ -19,6 +19,10 @@ import cs545_project.online_market.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.context.Context;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -189,5 +193,24 @@ public class OrderServiceImpl implements OrderService {
     public Order cancelOrder(Order order) {
         order.setStatus(OrderStatus.CANCELED);
         return  this.orderRepository.save(order);
+    }
+
+    @Override
+    public String generateInvoiceOrder(Order order) {
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+
+        Context context = new Context();
+        context.setVariable("orderResponse", mapToOrderResponse(order));
+
+        String carNumber = order.getCard().getCardNumber();
+        String lastFourDigits = carNumber.substring(carNumber.length() - 4);
+        context.setVariable("lastFourDigitsCard", lastFourDigits);
+
+        return templateEngine.process("/templates/views/buyer/invoiceOrder", context);
     }
 }

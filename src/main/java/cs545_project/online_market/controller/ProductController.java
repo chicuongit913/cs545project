@@ -37,7 +37,7 @@ public class ProductController {
         ProductResponse product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("isFollow", userService.isUserFollowSeller(product.getSeller()));
-        return "views/product-details";
+        return "views/product/product-details";
     }
 
     @PostMapping("/{id}/review")
@@ -46,7 +46,7 @@ public class ProductController {
         ProductResponse productResponse = null;
         if (bindingResult.hasErrors()) {
             model.addAttribute("product", productService.getProductById(id));
-            return "views/product-details";
+            return "views/product/product-details";
         } else {
             productResponse = productService.postReview(id, reviewRequest);
             return "redirect:/product/" + id;
