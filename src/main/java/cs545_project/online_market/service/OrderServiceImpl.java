@@ -9,16 +9,20 @@ import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.CartItem;
 import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.OrderDetails;
+import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.OrderRepository;
 import cs545_project.online_market.repository.ProductRepository;
 import cs545_project.online_market.repository.UserRepository;
-import org.hashids.Hashids;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.thymeleaf.context.Context;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -35,15 +39,13 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
     private OrderRepository orderRepository;
     private Util util;
-    private Hashids hashids;
 
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util, Hashids hashids) {
+    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.util = util;
-        this.hashids = hashids;
     }
 
     @Override
@@ -57,36 +59,40 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = generateOrder(buyer, request, cart);
 
+        double total = order.total(), credit = 0, remainPoints = 0;
         if (request.isApplyCoupon()) {
-            double total = order.total(), credit = 0, remainPoints = 0;
-            if (total <= buyer.getPoints()) {
-                remainPoints = buyer.getPoints() - total;
+            if (total <= buyer.getAvailablePointsCredit()) {
+                remainPoints = buyer.getAvailablePointsCredit() - total;
             } else {
-                credit = order.total() - buyer.getPoints();
-                order.setCard(
-                    buyer.getCards()
-                        .stream()
-                    .filter(c -> c.getId() == request.getPaymentCard())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Payment Card"))
-                );
+                credit = order.total() - buyer.getAvailablePointsCredit();
             }
-
-            buyer.setPoints(remainPoints);
-            order.setCredit(credit);
+        } else {
+            credit = total;
         }
 
+        order.setCard(
+            buyer.getCards()
+                .stream()
+                .filter(c -> c.getId().equals(request.getPaymentCard()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Payment Card"))
+        );
+        buyer.setPoints(remainPoints * 100 + credit);
+        order.setCredit(credit);
+        order.setBuyer(buyer);
         buyer.addOrder(order);
-        userRepository.save(buyer);
+        userRepository.save(buyer); // Save Order
+        productRepository.saveAll(
+            order.getOrderDetails()
+                .stream()
+                .map(OrderDetails::getProduct)
+                .collect(Collectors.toList())); // Update Products Stock
         return mapToOrderResponse(order);
     }
 
     @Override
-    public List<OrderResponse> getAllOrders(String username) {
-        User buyer = userRepository.findByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("Invalid user"));
-
-        return buyer.getOrders()
+    public List<OrderResponse> getOrdersOfCurrentUser() {
+        return util.getCurrentUser().getOrders()
             .stream()
             .map(this::mapToOrderResponse)
             .collect(Collectors.toList());
@@ -99,10 +105,11 @@ public class OrderServiceImpl implements OrderService {
             .stream()
             .map(this::generateOrderDetails)
             .collect(Collectors.toList());
+        order.setOrderDetails(items);
 
         ShippingAddress shippingAddress = buyer.getShippingAddresses()
             .stream()
-            .filter(addr -> addr.getId() == request.getShippingAddress())
+            .filter(addr -> addr.getId().equals(request.getShippingAddress()))
             .findFirst()
             .orElseGet(() -> {
                 ShippingAddress address = new ShippingAddress();
@@ -112,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
 
         BillingAddress billingAddress = buyer.getBillingAddresses()
             .stream()
-            .filter(addr -> addr.getId() == request.getBillingAddress())
+            .filter(addr -> addr.getId().equals(request.getBillingAddress()))
             .findFirst()
             .orElseGet(() -> {
                 BillingAddress address = new BillingAddress();
@@ -121,8 +128,7 @@ public class OrderServiceImpl implements OrderService {
             });
         order.setBillingAddress(billingAddress);
         order.setShippingAddress(shippingAddress);
-        order.setOrderDetails(items);
-
+        order.setReceiver(request.getReceiver());
         return order;
     }
 
@@ -134,6 +140,8 @@ public class OrderServiceImpl implements OrderService {
                     throw new IllegalArgumentException(
                         String.format("Product name %s only has %d item left", prod.getName(), prod.getStock()));
                 }
+
+                prod.setStock(prod.getStock() - cartItem.getQuantity());
                 return new OrderDetails(prod, cartItem.getQuantity(), prod.getPrice());
             })
             .orElseThrow(() -> new IllegalArgumentException("Product not found"));
@@ -141,18 +149,18 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponse mapToOrderResponse(Order order) {
         OrderResponse orderResponse = new OrderResponse();
-        orderResponse.setOrderCode(hashids.encode(order.getId()));
+        BeanUtils.copyProperties(order, orderResponse, "shippingAddress", "billingAddress");
+        orderResponse.setOrderCode(util.generateOrderCode(order.getId()));
         orderResponse.setBillingAddress(this.mapToBillingAddressResponse(order.getBillingAddress()));
         orderResponse.setShippingAddress(this.mapToShippingAddressResponse(order.getShippingAddress()));
-        orderResponse.setCredit(order.getCredit());
-        orderResponse.setPoints(order.getPoints());
-        orderResponse.setTotal(order.total());
+        orderResponse.setEarnedPoints(order.getCredit());
         orderResponse.setOrderItems(
             order.getOrderDetails()
                 .stream()
                 .map(this::mapToOrderItemResponse)
                 .collect(Collectors.toList())
         );
+        orderResponse.setTotal(order.total());
         return orderResponse;
     }
 
@@ -162,6 +170,7 @@ public class OrderServiceImpl implements OrderService {
         orderItemResponse.setQuantity(orderDetails.getQuantity());
         orderItemResponse.setProductName(orderDetails.getProduct().getName());
         orderItemResponse.setImage(orderDetails.getProduct().getImage());
+        orderItemResponse.setProductId(orderDetails.getProduct().getId());
         return orderItemResponse;
     }
 
@@ -175,5 +184,33 @@ public class OrderServiceImpl implements OrderService {
         AddressResponse response = new AddressResponse();
         BeanUtils.copyProperties(shippingAddress, response);
         return response;
+    }
+
+    public Order findById(long id) {
+        return this.orderRepository.findById(id).isPresent()?this.orderRepository.findById(id).get():null;
+    }
+
+    public Order cancelOrder(Order order) {
+        order.setStatus(OrderStatus.CANCELED);
+        return  this.orderRepository.save(order);
+    }
+
+    @Override
+    public String generateInvoiceOrder(Order order) {
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+
+        Context context = new Context();
+        context.setVariable("orderResponse", mapToOrderResponse(order));
+
+        String carNumber = order.getCard().getCardNumber();
+        String lastFourDigits = carNumber.substring(carNumber.length() - 4);
+        context.setVariable("lastFourDigitsCard", lastFourDigits);
+
+        return templateEngine.process("/templates/views/buyer/invoiceOrder", context);
     }
 }

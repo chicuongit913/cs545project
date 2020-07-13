@@ -12,4 +12,5 @@ public interface CartRepository {
 
 	void delete(String cartId);
 
+	void emptyCart(String cartId);
 }

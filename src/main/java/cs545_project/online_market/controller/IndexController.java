@@ -1,5 +1,7 @@
 package cs545_project.online_market.controller;
 
+import cs545_project.online_market.domain.BillingAddress;
+import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

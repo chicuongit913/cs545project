@@ -2,20 +2,27 @@ package cs545_project.online_market.helper;
 
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.service.UserService;
-import cs545_project.online_market.service.UserServiceImpl;
+import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Component
 public class Util {
     public static final String CART_ID_SESSION_KEY = "CART_ID_SESSION_KEY";
 
+    private UserService userService;
+    private Hashids hashids;
+
     @Autowired
-    UserService userService;
+    public Util(UserService userService, Hashids hashids) {
+        this.userService = userService;
+        this.hashids = hashids;
+    }
 
     public static boolean isLogged() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,6 +50,22 @@ public class Util {
 
     public static void updateCartId(HttpServletRequest request, String cartId) {
         request.getSession(true).setAttribute(CART_ID_SESSION_KEY, cartId);
+    }
+
+    public String generateOrderCode(long id) {
+        return hashids.encode(id);
+    }
+
+    public Long decodeOrderCode(String hash) {
+        return hashids.decode(hash)[0];
+    }
+
+    public String generateImageName() {
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        return String.valueOf(timeMilli);
     }
 }
 

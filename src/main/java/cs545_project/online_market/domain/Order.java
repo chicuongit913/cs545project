@@ -30,7 +30,7 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Enumerated(EnumType.STRING)
@@ -63,6 +63,14 @@ public class Order {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinTable(name = "order_billing")
     private BillingAddress billingAddress;
+
+    @ManyToOne
+    @JoinTable(
+            name = "buyer_order",
+            joinColumns = {@JoinColumn(name = "order_id")},
+            inverseJoinColumns = {@JoinColumn(name = "buyer_id")}
+    )
+    private User buyer;
 
     public boolean canCancel() {
         return OrderStatus.NEW.equals(status);

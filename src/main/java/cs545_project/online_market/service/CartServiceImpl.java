@@ -1,6 +1,7 @@
 package cs545_project.online_market.service;
 
 import cs545_project.online_market.controller.request.CartRequest;
+import cs545_project.online_market.domain.Card;
 import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.repository.CartRepository;
@@ -58,6 +59,11 @@ public class CartServiceImpl implements CartService {
             });
         cartRepository.update(cart.getCartId(), cart);
         return cart;
+    }
+
+    @Override
+    public void emptyCart(String cartId) {
+        cartRepository.emptyCart(cartId);
     }
 
 

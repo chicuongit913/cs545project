@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class Card {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String name;
     private String cardNumber;
     private int CVV;

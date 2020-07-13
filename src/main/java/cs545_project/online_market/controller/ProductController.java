@@ -2,7 +2,6 @@ package cs545_project.online_market.controller;
 
 import cs545_project.online_market.controller.request.ReviewRequest;
 import cs545_project.online_market.controller.response.ProductResponse;
-import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.service.ProductService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class ProductController {
         ProductResponse product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("isFollow", userService.isUserFollowSeller(product.getSeller()));
-        return "views/product-details";
+        return "views/product/product-details";
     }
 
     @PostMapping("/{id}/review")
@@ -47,7 +46,7 @@ public class ProductController {
         ProductResponse productResponse = null;
         if (bindingResult.hasErrors()) {
             model.addAttribute("product", productService.getProductById(id));
-            return "views/product-details";
+            return "views/product/product-details";
         } else {
             productResponse = productService.postReview(id, reviewRequest);
             return "redirect:/product/" + id;

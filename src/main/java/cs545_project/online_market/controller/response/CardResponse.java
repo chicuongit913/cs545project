@@ -9,7 +9,7 @@ import java.time.LocalDate;
  */
 @Data
 public class CardResponse {
-    private int id;
+    private Long id;
     private String name;
     private String cardNumber;
     private LocalDate valid;

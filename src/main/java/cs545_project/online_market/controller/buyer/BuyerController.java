@@ -1,7 +1,14 @@
 package cs545_project.online_market.controller.buyer;
 
+import com.lowagie.text.DocumentException;
+import cs545_project.online_market.domain.Order;
+import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.controller.request.CartRequest;
 import cs545_project.online_market.controller.request.OrderRequest;
+import cs545_project.online_market.controller.response.AddressResponse;
+import cs545_project.online_market.controller.response.CardResponse;
+import cs545_project.online_market.controller.response.CheckoutUserResponse;
+import cs545_project.online_market.controller.response.OrderResponse;
 import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
@@ -11,15 +18,24 @@ import cs545_project.online_market.service.CartService;
 import cs545_project.online_market.service.OrderService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.*;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/buyer")
@@ -27,6 +43,9 @@ public class BuyerController {
     private OrderService orderService;
     private CartService cartService;
     private UserService userService;
+
+    @Autowired
+    Util util;
 
     @Autowired
     public BuyerController(CartService cartService, OrderService orderService, UserService userService) {
@@ -77,29 +96,47 @@ public class BuyerController {
             return "/views/buyer/cart";
         }
 
-        model.addAttribute("checkout_user", userService.getUserForCheckout());
+        setupCheckoutData(orderRequest, model);
         return "views/buyer/checkout";
     }
 
+    private void setupCheckoutData(OrderRequest orderRequest, Model model) {
+        CheckoutUserResponse userForCheckout = userService.getUserForCheckout();
+        if (userForCheckout != null) {
+            orderRequest.setReceiver(userForCheckout.getName());
+            orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).filter(l -> !l.isEmpty()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+            orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).filter(l -> !l.isEmpty()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+            orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).filter(l -> !l.isEmpty()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
+        }
+        model.addAttribute("checkout_user", userForCheckout);
+    }
+
     @PostMapping("/order")
-    public String placeOrder(@Valid OrderRequest orderRequest, HttpServletRequest request, Model model) {
+    public String placeOrder(@Valid OrderRequest orderRequest, HttpServletRequest request, Model model,
+                             RedirectAttributes attributes) {
         try {
             String cartId = Util.extractCartId(request);
-            orderService.placeOrder(orderRequest, cartService.read(cartId));
-            cartService.update(cartId, new Cart());
+            OrderResponse orderResponse = orderService.placeOrder(orderRequest, cartService.read(cartId));
+            attributes.addFlashAttribute("points", orderResponse.getEarnedPoints());
+            cartService.emptyCart(cartId);
             model.addAttribute("cart", cartService.read(cartId));
         } catch (IllegalArgumentException ex) {
             model.addAttribute("place_order_errors", ex.getMessage());
-            model.addAttribute("checkout_user", userService.getUserForCheckout());
+            setupCheckoutData(orderRequest, model);
             return "views/buyer/checkout";
         }
 
-        return "/views/buyer/cart";
+        return "redirect:/buyer/order-success";
+    }
+
+    @GetMapping("/order-success")
+    public String orderedSuccessful(Model model) {
+        return "views/buyer/order-success";
     }
 
     @GetMapping("/orders")
     public String viewOrders(HttpServletRequest request, Model model) {
-        model.addAttribute("orders", orderService.getAllOrders((String) request.getAttribute("user_name")));
+        model.addAttribute("orders", orderService.getOrdersOfCurrentUser());
         return "/views/buyer/orders";
     }
 
@@ -125,5 +162,57 @@ public class BuyerController {
         userService.unFollowSeller(seller);
         String referer = request.getHeader("Referer");
         return "redirect:"+ referer;
+    }
+
+    @GetMapping("/orders/cancel/{id}")
+    public String cancelOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) {
+        Order order = orderService.findById(id);
+
+        if (order == null) {
+            return "redirect:/buyer/orders";
+        }
+
+        if(!order.getBuyer().equals(util.getCurrentUser()) || order.getStatus() != OrderStatus.NEW)
+             return "redirect:/auth/denied";
+
+        orderService.cancelOrder(order);
+
+        String referer = request.getHeader("Referer");
+        return "redirect:"+ referer;
+    }
+
+    @GetMapping("/orders/print/{id}")
+    public ResponseEntity<InputStreamResource> printInvoiceOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) throws IOException, DocumentException {
+        Order order = orderService.findById(id);
+
+//        if (order == null) {
+//            return "redirect:/buyer/orders";
+//        }
+//
+//        if(!order.getBuyer().equals(util.getCurrentUser()))
+//            return "redirect:/auth/denied";
+
+        String  htmlOder = this.orderService.generateInvoiceOrder(order);
+
+        String outputFolder = "invoice"+id+".pdf";
+        OutputStream outputStream = new FileOutputStream(outputFolder);
+
+        ITextRenderer renderer = new ITextRenderer();
+        renderer.setDocumentFromString(htmlOder);
+        renderer.layout();
+        renderer.createPDF(outputStream);
+        outputStream.close();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename="+"invoice"+id+".pdf");
+
+        File file = new File( outputFolder);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
     }
 }
