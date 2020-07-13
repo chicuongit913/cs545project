@@ -120,7 +120,7 @@ public class SellerController {
                 e.printStackTrace();
             }
         }
-       
+
         Long id = util.getCurrentUser().getId();
         ArrayList<Product> products = productService.getSellerProducts(id);
         model.addAttribute("sellerProducts", products);
