@@ -180,6 +180,8 @@ public class OrderServiceImpl implements OrderService {
         orderItemResponse.setProductName(orderDetails.getProduct().getName());
         orderItemResponse.setImage(orderDetails.getProduct().getImage());
         orderItemResponse.setProductId(orderDetails.getProduct().getId());
+        orderItemResponse.setStatus(orderDetails.getStatus());
+        orderItemResponse.setId(orderDetails.getId());
         return orderItemResponse;
     }
 
@@ -199,9 +201,14 @@ public class OrderServiceImpl implements OrderService {
         return this.orderRepository.findById(id).isPresent()?this.orderRepository.findById(id).get():null;
     }
 
-    public Order cancelOrder(Order order) {
-        order.setStatus(OrderStatus.CANCELED);
-        return  this.orderRepository.save(order);
+    @Override
+    public Order cancelOrder(Order order, Long itemId) {
+        OrderDetails orderDetail = order.getOrderDetails().stream().filter(oi -> oi.getId() == itemId).findFirst().orElseGet(null);
+        if(orderDetail != null && orderDetail.getStatus().equals(OrderStatus.NEW)) {
+            orderDetail.setStatus(OrderStatus.CANCELED);
+        }
+
+        return this.orderRepository.save(order);
     }
 
     @Override

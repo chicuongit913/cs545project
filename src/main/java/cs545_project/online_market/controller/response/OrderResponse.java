@@ -15,7 +15,6 @@ import java.util.List;
 public class OrderResponse {
     private String orderCode;
     private long id;
-    private OrderStatus status;
     private double total;
     private double credit;
     private double points;

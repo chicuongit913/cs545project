@@ -33,9 +33,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status = OrderStatus.NEW;
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private List<OrderDetails> orderDetails = new ArrayList<>();
@@ -71,10 +68,6 @@ public class Order {
             inverseJoinColumns = {@JoinColumn(name = "buyer_id")}
     )
     private User buyer;
-
-    public boolean canCancel() {
-        return OrderStatus.NEW.equals(status);
-    }
 
     public double total() {
         return orderDetails.stream()

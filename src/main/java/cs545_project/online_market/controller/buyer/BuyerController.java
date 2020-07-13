@@ -26,10 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -169,19 +166,21 @@ public class BuyerController {
         return "redirect:" + referer;
     }
 
-    @GetMapping("/orders/cancel/{id}")
-    public String cancelOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) {
-        Order order = orderService.findById(id);
+    @GetMapping("/orders/cancel")
+    public String cancelOrder(@RequestParam("order_id") Long orderId, @RequestParam("item_id") Long itemId
+            , Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        Order order = orderService.findById(orderId);
 
         if (order == null) {
             return "redirect:/buyer/orders";
         }
 
-        if (!order.getBuyer().equals(util.getCurrentUser()) || order.getStatus() != OrderStatus.NEW)
+        if (!order.getBuyer().equals(util.getCurrentUser()))
             return "redirect:/auth/denied";
 
-        orderService.cancelOrder(order);
-
+        orderService.cancelOrder(order, itemId);
+        redirectAttributes.addFlashAttribute("order_expand_id", orderId);
         String referer = request.getHeader("Referer");
         return "redirect:" + referer;
     }

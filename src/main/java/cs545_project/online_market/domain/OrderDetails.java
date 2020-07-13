@@ -21,6 +21,9 @@ public class OrderDetails {
 
     private double price;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status = OrderStatus.NEW;
+
     public OrderDetails(Product product, int quantity, double price) {
         this.product = product;
         this.quantity = quantity;
@@ -49,5 +52,9 @@ public class OrderDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id, quantity, price, product);
+    }
+
+    public boolean canCancel() {
+        return OrderStatus.NEW.equals(status);
     }
 }

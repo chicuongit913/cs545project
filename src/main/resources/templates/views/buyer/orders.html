@@ -28,7 +28,7 @@
             <span class="font-weight-bolder">Order</span>
           </div>
           <div class="col-2 text-center">
-            <span class="font-weight-bolder">Status</span>
+            <span class="font-weight-bolder">Code</span>
           </div>
           <div class="col-2 text-center">
             <span class="font-weight-bolder">Total</span>
@@ -52,13 +52,7 @@
                 <span th:text="'#'+${orderStat.count}"></span>
               </div>
               <div class="col-2">
-                <div th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
-                      class="border border-primary text-primary rounded w-75 text-center" th:text="${order.status}"></div>
-                <div th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
-                      class="border border-danger text-danger rounded w-75 text-center" th:text="${order.status}"></div>
-                <div th:unless="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}
-              or ${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
-                      class="border border-info text-info rounded w-75 text-center" th:text="${order.status}"></div>
+                <span th:text="${order.hashCode()}"></span>
               </div>
               <div class="col-2">
                 <span th:text="'$ ' + ${order.total}"></span>
@@ -78,27 +72,42 @@
                    th:href="@{/buyer/orders/print/{id}(id = ${order.getId()})}">
                   <i class="fa fa-print"></i>
                 </a>
-                <a th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
-                   class="btn btn-danger btn-sm" th:href="@{/buyer/orders/cancel/{id}(id = ${order.getId()})}">
-                  <i class="fa fa-remove"></i>
-                </a>
               </div>
             </div>
           </div>
-          <div th:id="'detail_order_' + ${order.hashCode()}" class="collapse">
+          <div th:id="'detail_order_' + ${order.hashCode()}"
+               th:class="${order_expand_id} == ${order.id}? 'collapse show' : 'collapse'">
             <div class="card-body">
               <div class="d-flex flex-column">
-                <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap">
-                  <div class="col-md-2">
+                <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap order-item pb-2 pt-2 border-bottom">
+                  <div class="col-md-1">
                     <img class="prod-image" th:src="${item.image}">
                   </div>
-                  <div class="col-md-10 flex-column">
+                  <div class="col-md-5 d-flex flex-wrap align-items-center">
                     <div>
                       <a th:href="@{/product/{id}(id=${item.productId})}" th:text="${item.productName}"></a>
                     </div>
-                    <div>
-                      <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${item.price}"></span>
-                    </div>
+                  </div>
+                  <div class="col-md-1 d-flex flex-wrap align-items-center">
+                    <span class="badge badge-light text-danger p-2" th:text="${item.quantity}"></span>
+                  </div>
+                  <div class="col-md-1 d-flex flex-wrap align-items-center">
+                    <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${item.price}"></span>
+                  </div>
+                  <div class="col-md-2 d-flex flex-wrap align-items-center">
+                    <div th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                         class="border border-primary text-primary rounded w-75 text-center" th:text="${item.status}"></div>
+                    <div th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
+                         class="border border-danger text-danger rounded w-75 text-center" th:text="${item.status}"></div>
+                    <div th:unless="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}
+                  or ${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
+                         class="border border-info text-info rounded w-75 text-center" th:text="${item.status}"></div>
+                  </div>
+                  <div class="col-md-2 d-flex flex-wrap align-items-center text-right">
+                    <a th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                       class="btn btn-danger btn-sm" th:href="@{/buyer/orders/cancel(order_id = ${order.id}, item_id = ${item.id})}">
+                      <i class="fa fa-remove"></i>
+                    </a>
                   </div>
                 </div>
               </div>
