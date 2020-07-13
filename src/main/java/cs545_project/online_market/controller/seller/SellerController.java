@@ -7,6 +7,7 @@ import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.ProductService;
+import org.bouncycastle.math.raw.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +33,7 @@ public class SellerController {
     private Util util;
     private ProductService productService;
     private MultipartFile productImage;
-    private String rootDirectory = System.getProperty("user.dir") + "\\images\\products\\";
+    private String rootDirectory = System.getProperty("user.dir") + "\\images\\";
 
 
     @Autowired
@@ -47,8 +48,6 @@ public class SellerController {
     public String getPage(Model model) {
         Long id = util.getCurrentUser().getId();
         ArrayList<Product> products = productService.getSellerProducts(id);
-//        ArrayList<Product> products = productService.getAllProducts();
-
         model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
@@ -61,7 +60,7 @@ public class SellerController {
 
 
     @PostMapping(value = "/seller/addProduct")
-    public String saveProduct(@Valid @ModelAttribute("product") ProductRequest product, BindingResult bindingResult, HttpServletRequest request) {
+    public String saveProduct(@Valid @ModelAttribute("product") ProductRequest product, BindingResult bindingResult, HttpServletRequest request, Model model) {
 
         if (bindingResult.hasErrors()) {
             return "views/seller/AddProduct";
@@ -81,6 +80,14 @@ public class SellerController {
                 e.printStackTrace();
             }
         }
+        else {
+            String path = "https://placeimg.com/500/500/tech?query=97";
+            User seller = util.getCurrentUser();
+            productService.saveProduct(product, path, seller);
+        }
+        Long id = util.getCurrentUser().getId();
+        ArrayList<Product> products = productService.getSellerProducts(id);
+        model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
 
@@ -93,7 +100,7 @@ public class SellerController {
 
 
     @PostMapping(value = "/seller/update-product/{productId}")
-    public String updateProduct(@PathVariable long productId, @Valid @ModelAttribute("updateProduct") ProductRequest product, BindingResult bindingResult) {
+    public String updateProduct(@PathVariable long productId, @Valid @ModelAttribute("updateProduct") ProductRequest product, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "views/seller/UpdateProduct";
         }
@@ -104,7 +111,7 @@ public class SellerController {
             try {
                 String imageName = util.generateImageName();
                 productImage.transferTo(new File(rootDirectory + imageName+".png"));
-                String path = "/images/products/" + imageName+".png";
+                String path = rootDirectory + product.getName()+".png";
                 product.setId(productId);
                 User seller = util.getCurrentUser();
                 productService.updateProduct(product, path, seller);
@@ -113,6 +120,10 @@ public class SellerController {
                 e.printStackTrace();
             }
         }
+       
+        Long id = util.getCurrentUser().getId();
+        ArrayList<Product> products = productService.getSellerProducts(id);
+        model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
 
@@ -129,6 +140,9 @@ public class SellerController {
 
        else
         productService.deleteProduct(productId);
+        Long id = util.getCurrentUser().getId();
+        ArrayList<Product> products = productService.getSellerProducts(id);
+        model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
 
