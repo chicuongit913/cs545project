@@ -185,7 +185,8 @@
             </td>
         </tr>
 
-        <tr th:each="orderItem : ${orderResponse.orderItems}" class="item">
+        <tr th:each="orderItem : ${orderResponse.orderItems}" class="item"
+            >
             <td>
                 <span th:text="${orderItem.getProductName()}" th:remove="tag" ></span>
             </td>

@@ -35,7 +35,7 @@ public class OrderDetails {
     private Product product;
 
     public double total() {
-        return price * quantity;
+        return status != OrderStatus.CANCELED ? price * quantity : 0;
     }
 
     @Override

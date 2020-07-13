@@ -220,8 +220,14 @@ public class OrderServiceImpl implements OrderService {
         TemplateEngine templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(templateResolver);
 
+        OrderResponse orderResponse = mapToOrderResponse(order);
+
+        orderResponse.setOrderItems(
+                orderResponse.getOrderItems().stream().filter(oi -> oi.getStatus() != OrderStatus.CANCELED).collect(Collectors.toList())
+        );
+
         Context context = new Context();
-        context.setVariable("orderResponse", mapToOrderResponse(order));
+        context.setVariable("orderResponse", orderResponse);
 
         String cardNumber = order.getCard().getCardNumber();
         String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
