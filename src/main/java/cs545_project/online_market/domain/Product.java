@@ -48,12 +48,7 @@ public class Product {
      */
     private boolean isInUse;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "product_review",
-        joinColumns = {@JoinColumn(name = "product_id")},
-        inverseJoinColumns = {@JoinColumn(name = "review_id")}
-    )
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<Review> reviews = new ArrayList<>();
 
     @Temporal(value = TemporalType.TIMESTAMP)
@@ -68,6 +63,7 @@ public class Product {
     }
 
     public void addReview(Review review) {
+        review.setProduct(this);
         this.reviews.add(review);
     }
     

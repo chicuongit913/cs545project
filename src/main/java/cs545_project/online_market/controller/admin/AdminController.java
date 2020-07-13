@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-//@Controller
+@Controller
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
@@ -20,7 +20,7 @@ public class AdminController {
     @GetMapping("/pending-sellers")
     public String pendingSellers(Model model){
         model.addAttribute("pendingSellers", sellerService.getPendingSellers());
-        return "/views/admin/pending-sellers";
+        return "views/admin/pending_sellers";
     }
     @PutMapping("/approve-seller/{sellerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
@@ -37,7 +37,7 @@ public class AdminController {
     @GetMapping("/created-reviews")
     public String createdReviews(Model model){
         model.addAttribute("createdReviews", reviewService.getCreatedReviews());
-        return "/views/admin/created-reviews";
+        return "views/admin/created_reviews";
     }
 
     @PutMapping("/post-review/{reviewId}")

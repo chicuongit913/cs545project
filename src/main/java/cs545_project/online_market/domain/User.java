@@ -68,7 +68,7 @@ public class User {
 	private List<Order> orders = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user")
-	private List<Card> cards;
+	private List<Card> cards = new ArrayList<>();
 
 	/**
 	 * Store Buyer points. This points will be updated every time Buyer make/cancel/return Order
