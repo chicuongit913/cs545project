@@ -17,7 +17,7 @@ public class AddressServiceImpl implements AddressService {
     AddressRepository addressRepository;
 
     @Override
-    public Address findById(int id) {
+    public Address findById(long id) {
         return this.addressRepository.findById(id).isPresent()?
                 this.addressRepository.findById(id).get():null;
     }

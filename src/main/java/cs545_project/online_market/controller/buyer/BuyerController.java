@@ -156,13 +156,15 @@ public class BuyerController {
     }
 
     @GetMapping("/un_follow_seller/{id}")
-    public String unFollowSeller(@PathVariable("id") long id, Model model, HttpServletRequest request) {
+    public String unFollowSeller(@PathVariable("id") long id, Model model, HttpServletRequest request,
+                                 RedirectAttributes redirectAttributes) {
         User seller = userService.findById(id);
 
         if (seller == null || seller.getRole() != UserRole.SELLER)
             throw new IllegalArgumentException(new UserNotFoundException(id));
 
         userService.unFollowSeller(seller);
+        redirectAttributes.addFlashAttribute("successMessage", "Un-Following seller: " + seller.getFullName() + " is completed!");
         String referer = request.getHeader("Referer");
         return "redirect:" + referer;
     }

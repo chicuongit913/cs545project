@@ -8,13 +8,13 @@ public class AddressNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 3935230281455340039L;
 
-	private int id;
+	private long id;
 
-	public AddressNotFoundException(int id) {
+	public AddressNotFoundException(long id) {
 		this.id = id;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 

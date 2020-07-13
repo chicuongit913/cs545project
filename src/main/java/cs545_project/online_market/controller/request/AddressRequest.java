@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class AddressRequest {
 
-    private int id;
+    private Long id;
 
     @NotEmpty
     private String street;
