@@ -10,7 +10,7 @@ public class OnlineMarketApplication {
 
     @Bean
     public Hashids hashids() {
-        return new Hashids("Order-is-generator");
+        return new Hashids("Order-is-generator", 8);
     }
 
     public static void main(String[] args) {

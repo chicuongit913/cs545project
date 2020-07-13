@@ -35,15 +35,13 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
     private OrderRepository orderRepository;
     private Util util;
-    private Hashids hashids;
 
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util, Hashids hashids) {
+    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.util = util;
-        this.hashids = hashids;
     }
 
     @Override
@@ -122,6 +120,7 @@ public class OrderServiceImpl implements OrderService {
         order.setBillingAddress(billingAddress);
         order.setShippingAddress(shippingAddress);
         order.setOrderDetails(items);
+        order.setReceiver(request.getReceiver());
 
         return order;
     }
@@ -141,12 +140,13 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponse mapToOrderResponse(Order order) {
         OrderResponse orderResponse = new OrderResponse();
-        orderResponse.setOrderCode(hashids.encode(order.getId()));
+        orderResponse.setOrderCode(util.generateOrderCode(order.getId()));
         orderResponse.setBillingAddress(this.mapToBillingAddressResponse(order.getBillingAddress()));
         orderResponse.setShippingAddress(this.mapToShippingAddressResponse(order.getShippingAddress()));
         orderResponse.setCredit(order.getCredit());
         orderResponse.setPoints(order.getPoints());
         orderResponse.setTotal(order.total());
+        orderResponse.setReceiver(order.getReceiver());
         orderResponse.setOrderItems(
             order.getOrderDetails()
                 .stream()
@@ -162,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
         orderItemResponse.setQuantity(orderDetails.getQuantity());
         orderItemResponse.setProductName(orderDetails.getProduct().getName());
         orderItemResponse.setImage(orderDetails.getProduct().getImage());
+        orderItemResponse.setProductId(orderDetails.getProduct().getId());
         return orderItemResponse;
     }
 

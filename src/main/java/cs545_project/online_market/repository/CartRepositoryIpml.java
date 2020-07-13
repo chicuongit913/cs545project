@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class CartRepositoryIpml implements CartRepository {
@@ -45,5 +46,11 @@ public class CartRepositoryIpml implements CartRepository {
 					.format("Can not delete cart. The cart with the give id (%) does not does not exist", cartId));
 		}
 		listOfCarts.remove(cartId);
+	}
+
+	@Override
+	public void emptyCart(String cartId) {
+		Optional.ofNullable(listOfCarts.get(cartId)).orElseThrow(() -> new IllegalArgumentException("Cart does not " +
+			"exist")).empty();
 	}
 }

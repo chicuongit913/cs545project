@@ -13,4 +13,6 @@ public interface CartService {
 	void delete(String cartId);
 
 	Cart checkAndUpdateCart(String extractCartId, CartRequest cartRequest);
+
+	void emptyCart(String cartId);
 }

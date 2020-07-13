@@ -2,7 +2,7 @@ package cs545_project.online_market.helper;
 
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.service.UserService;
-import cs545_project.online_market.service.UserServiceImpl;
+import org.hashids.Hashids;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,8 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 public class Util {
     public static final String CART_ID_SESSION_KEY = "CART_ID_SESSION_KEY";
 
+    private UserService userService;
+    private Hashids hashids;
+
     @Autowired
-    UserService userService;
+    public Util(UserService userService, Hashids hashids) {
+        this.userService = userService;
+        this.hashids = hashids;
+    }
 
     public static boolean isLogged() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,6 +49,10 @@ public class Util {
 
     public static void updateCartId(HttpServletRequest request, String cartId) {
         request.getSession(true).setAttribute(CART_ID_SESSION_KEY, cartId);
+    }
+
+    public String generateOrderCode(long id) {
+        return hashids.encode(id);
     }
 }
 

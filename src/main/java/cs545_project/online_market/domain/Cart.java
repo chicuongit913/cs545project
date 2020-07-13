@@ -89,5 +89,10 @@ public class Cart {
 	public String toString() {
 		return "Cart [cartId=" + cartId + ", cartItems=" + cartItems + ", grandTotal=" + grandTotal + "]";
 	}
-	
+
+    public void empty() {
+		cartItems = new HashMap<>();
+		grandTotal = 0;
+		quantity = 0;
+    }
 }

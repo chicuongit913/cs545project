@@ -2,6 +2,9 @@ package cs545_project.online_market.controller.buyer;
 
 import cs545_project.online_market.controller.request.CartRequest;
 import cs545_project.online_market.controller.request.OrderRequest;
+import cs545_project.online_market.controller.response.AddressResponse;
+import cs545_project.online_market.controller.response.CardResponse;
+import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/buyer")
@@ -77,8 +81,17 @@ public class BuyerController {
             return "/views/buyer/cart";
         }
 
-        model.addAttribute("checkout_user", userService.getUserForCheckout());
+        setupCheckoutData(orderRequest, model);
         return "views/buyer/checkout";
+    }
+
+    private void setupCheckoutData(OrderRequest orderRequest, Model model) {
+        CheckoutUserResponse userForCheckout = userService.getUserForCheckout();
+        orderRequest.setReceiver(userForCheckout.getName());
+        orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+        orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+        orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
+        model.addAttribute("checkout_user", userForCheckout);
     }
 
     @PostMapping("/order")
@@ -86,11 +99,11 @@ public class BuyerController {
         try {
             String cartId = Util.extractCartId(request);
             orderService.placeOrder(orderRequest, cartService.read(cartId));
-            cartService.update(cartId, new Cart());
+            cartService.emptyCart(cartId);
             model.addAttribute("cart", cartService.read(cartId));
         } catch (IllegalArgumentException ex) {
             model.addAttribute("place_order_errors", ex.getMessage());
-            model.addAttribute("checkout_user", userService.getUserForCheckout());
+            setupCheckoutData(orderRequest, model);
             return "views/buyer/checkout";
         }
 

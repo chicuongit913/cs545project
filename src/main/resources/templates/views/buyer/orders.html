@@ -9,7 +9,7 @@
 <body>
 
 <th:block layout:fragment="page-custom-js">
-  <script type="text/javascript" th:src="@{/js/buyer/cart.js}"></script>
+  <script type="text/javascript" th:src="@{/js/buyer/orders.js}"></script>
 </th:block>
 
 <div class="col" layout:fragment="main-content">
@@ -43,12 +43,13 @@
                   <span class="cus-text-light">SHIP TO</span>
                 </div>
                 <div>
-                  <span class="cus-text-light" th:text="${order.receiver}"></span>
+                  <a href="#" th:text="${order.receiver}" data-toggle="popover" data-trigger="focus"
+                        title="Address" th:data-content="${order.shippingAddress.beautyAddress}"></a>
                 </div>
               </div>
               <div class="flex-column mb-2">
                 <div>
-                  <span class="cus-text-light" th:text="'ORDER' + ${order.orderCode}"></span>
+                  <span class="cus-text-light">ORDER</span><span th:text="' #' + ${order.orderCode}"></span>
                 </div>
                 <div>
                   <a href="#">Order Details</a>
