@@ -32,7 +32,7 @@
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item mr-2">
+                <li class="nav-item mr-2" th:if="${user_name == null || user_role == 'BUYER'}">
                     <a class="nav-link" th:href="@{/buyer/cart}"><i class="fa fa-shopping-cart"></i></a>
                 </li>
                 <li class="nav-item dropdown">
@@ -41,7 +41,13 @@
                     </a>
 
                     <div th:if="${user_name} and ${user_role} == 'ADMIN'" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Action for ADMIN</a>
+                        <a class="dropdown-item" th:href="@{/admin/pending-reviews}">
+                            <i class="fa fa-tasks mr-1"></i>Product Reviews
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/admin/pending-sellers}">
+                            <i class="fa fa-user mr-1"></i>Pending Sellers
+                        </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" th:href="@{/perform_logout}"><i class="fa fa-sign-out"></i> Logout</a>
                     </div>
@@ -54,7 +60,7 @@
                     </div>
 
                     <div th:if="${user_name} and ${user_role} == 'SELLER'" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/seller"><i class="fa fa-user"></i> Action for SELLER</a>
+                        <a class="dropdown-item" href="/seller"><i class="fa fa-user mr-1"></i>Product Management</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" th:href="@{/perform_logout}"><i class="fa fa-sign-out"></i> Logout</a>
                     </div>

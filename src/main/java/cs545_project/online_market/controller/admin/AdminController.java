@@ -7,26 +7,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
-    SellerService sellerService;
+    private SellerService sellerService;
+    private ReviewService reviewService;
 
     @Autowired
-    ReviewService reviewService;
+    public AdminController(SellerService sellerService, ReviewService reviewService) {
+        this.sellerService = sellerService;
+        this.reviewService = reviewService;
+    }
+
     @GetMapping("/pending-sellers")
-    public String pendingSellers(Model model){
+    public String pendingSellers(Model model) {
         model.addAttribute("pendingSellers", sellerService.getPendingSellers());
         return "views/admin/pending_sellers";
     }
+
     @PutMapping("/approve-seller/{sellerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void approveSeller(@PathVariable("sellerId") long sellerId) throws NotFoundException {
         sellerService.approveSeller(sellerId);
     }
+
     @PutMapping("/reject-seller/{sellerId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void rejectSeller(@PathVariable("sellerId") long sellerId) throws NotFoundException {
@@ -34,8 +44,8 @@ public class AdminController {
     }
 
 
-    @GetMapping("/created-reviews")
-    public String createdReviews(Model model){
+    @GetMapping("/pending-reviews")
+    public String createdReviews(Model model) {
         model.addAttribute("createdReviews", reviewService.getCreatedReviews());
         return "views/admin/created_reviews";
     }
