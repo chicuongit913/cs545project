@@ -14,7 +14,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-import sun.security.ssl.KerberosClientKeyExchange;
+//import sun.security.ssl.KerberosClientKeyExchange;
 
 @Service
 public class EmailServiceImpl implements EmailService{

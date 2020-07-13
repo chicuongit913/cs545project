@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import java.io.File;
 import java.util.Locale;
 
 @Configuration
@@ -55,10 +56,13 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
         registry.addInterceptor(new UserInterceptor());
     }
 
-    public static String uploadDirectory= System.getProperty("user.dir") + "\\images\\products";
+    public static String uploadDirectory= System.getProperty("user.dir") + "\\images";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/products/**").addResourceLocations("file:" + uploadDirectory+"\\");
+        registry
+                .addResourceHandler("/product_images/**")
+                .addResourceLocations(new File(uploadDirectory).toURI().toString());
     }
+
 }
