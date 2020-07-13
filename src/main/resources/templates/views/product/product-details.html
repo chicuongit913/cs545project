@@ -27,7 +27,7 @@
           <div class="border-top border-grey border-bottom">
             <p th:text="${product.description}" class="cus-text-light mt-2"></p>
           </div>
-          <div class="d-flex flex-row align-items-center mt-3">
+          <div class="d-flex flex-row align-items-center mt-3" th:if="${user_name == null || user_role == 'BUYER'}">
             <!--            <span>Quantity: </span>-->
             <!--            <input size="2" type="number" class="form-control ml-2 w-25">-->
             <a href="#" th:data-name="${product.name}" th:data-id="${product.id}"
@@ -81,7 +81,7 @@
               <div>
                 <span class="text-danger" th:if="${#fields.hasErrors('review')}" th:errors="*{review}"></span>
               </div>
-              <textarea alt="Enter review" class="form-control" rows="4" name="review"></textarea>
+              <textarea alt="Enter review" class="form-control shadow-none" rows="4" name="review"></textarea>
               <div class="d-flex justify-content-end mt-2">
                 <input type="submit" value="Post" class="btn btn-secondary rounded shadow"/>
               </div>

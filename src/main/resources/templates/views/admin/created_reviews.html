@@ -13,7 +13,11 @@
 <div id="contents" class="row" layout:fragment="main-content">
     <div class="d-flex flex-column mt-4 mb-4">
         <div class="h4">Pending reviews</div>
-        <table class="table table-responsive table-striped">
+        <div class="mt-2" th:if="${createdReviews == null || createdReviews.isEmpty()}">
+            <span class="cus-text-light">There is no pending review</span>
+        </div>
+        <table class="table table-responsive table-striped"
+               th:if="${createdReviews != null && !createdReviews.isEmpty()}">
             <thead>
             <tr>
                 <th scope="col">#</th>
