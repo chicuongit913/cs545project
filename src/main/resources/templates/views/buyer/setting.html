@@ -15,6 +15,9 @@
     <div class="row mt-5">
         <h2>Setting Page</h2>
     </div>
+    <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success" role="alert"></div>
+    <div th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-danger" role="alert"></div>
+
     <div class="mt-5 block-setting">
         <div class="block-setting-header" >
             <span class="float-left">Billing Address</span>

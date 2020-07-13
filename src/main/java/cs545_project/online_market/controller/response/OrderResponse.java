@@ -26,4 +26,5 @@ public class OrderResponse {
     private AddressResponse billingAddress;
     private List<OrderItemResponse> orderItems;
     private User buyer;
+    private String CardNumber;
 }

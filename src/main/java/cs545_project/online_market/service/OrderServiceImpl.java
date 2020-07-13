@@ -18,6 +18,7 @@ import cs545_project.online_market.repository.ProductRepository;
 import cs545_project.online_market.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -39,13 +40,16 @@ public class OrderServiceImpl implements OrderService {
     private ProductRepository productRepository;
     private OrderRepository orderRepository;
     private Util util;
+    private EmailService emailService;
 
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util) {
+    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository,
+                            OrderRepository orderRepository, Util util, EmailService emailService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.util = util;
+        this.emailService = emailService;
     }
 
     @Override
@@ -87,7 +91,11 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(OrderDetails::getProduct)
                 .collect(Collectors.toList())); // Update Products Stock
-        return mapToOrderResponse(order);
+
+        OrderResponse orderResponse = mapToOrderResponse(order);
+        this.emailService.sendConfirmPurchaseMessage(orderResponse);
+
+        return orderResponse;
     }
 
     @Override
@@ -154,6 +162,7 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setBillingAddress(this.mapToBillingAddressResponse(order.getBillingAddress()));
         orderResponse.setShippingAddress(this.mapToShippingAddressResponse(order.getShippingAddress()));
         orderResponse.setEarnedPoints(order.getCredit());
+        orderResponse.setCardNumber(order.getCard().getCardNumber());
         orderResponse.setOrderItems(
             order.getOrderDetails()
                 .stream()
@@ -207,8 +216,8 @@ public class OrderServiceImpl implements OrderService {
         Context context = new Context();
         context.setVariable("orderResponse", mapToOrderResponse(order));
 
-        String carNumber = order.getCard().getCardNumber();
-        String lastFourDigits = carNumber.substring(carNumber.length() - 4);
+        String cardNumber = order.getCard().getCardNumber();
+        String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
         context.setVariable("lastFourDigitsCard", lastFourDigits);
 
         return templateEngine.process("/templates/views/buyer/invoiceOrder", context);

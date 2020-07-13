@@ -7,6 +7,7 @@ import cs545_project.online_market.controller.response.ReviewResponse;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.domain.Review;
 import cs545_project.online_market.domain.User;
+import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,12 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private ProductRepository productRepository;
+    private Util util;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, Util util) {
         this.productRepository = productRepository;
+        this.util = util;
     }
 
     @Override
@@ -100,7 +103,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid Product Id"));
-        product.addReview(new Review(reviewRequest.getReview()));
+        Review review = new Review();
+        review.setReviewer(util.getCurrentUser());
+        review.setText(reviewRequest.getReview());
+        product.addReview(review);
         return apply(productRepository.save(product));
     }
 
@@ -113,7 +119,8 @@ public class ProductServiceImpl implements ProductService {
                 .filter(Review::isValid)
                 .map(r -> {
                     ReviewResponse reviewResponse = new ReviewResponse();
-                    BeanUtils.copyProperties(r, reviewResponse);
+                    BeanUtils.copyProperties(r, reviewResponse, "reviewer");
+                    reviewResponse.setReviewer(r.getReviewer().getFullName());
                     return reviewResponse;
                 })
                 .collect(Collectors.toList())

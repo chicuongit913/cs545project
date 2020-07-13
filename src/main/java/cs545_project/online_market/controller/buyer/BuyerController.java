@@ -15,6 +15,7 @@ import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.exception.UserNotFoundException;
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.CartService;
+import cs545_project.online_market.service.EmailService;
 import cs545_project.online_market.service.OrderService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,15 +44,17 @@ public class BuyerController {
     private OrderService orderService;
     private CartService cartService;
     private UserService userService;
+    private EmailService emailService;
+    private Util util;
 
     @Autowired
-    Util util;
-
-    @Autowired
-    public BuyerController(CartService cartService, OrderService orderService, UserService userService) {
+    public BuyerController(CartService cartService, OrderService orderService,
+                           UserService userService, EmailService emailService, Util util) {
         this.orderService = orderService;
         this.cartService = cartService;
         this.userService = userService;
+        this.emailService = emailService;
+        this.util = util;
     }
 
     @GetMapping("/cart")
@@ -144,24 +147,26 @@ public class BuyerController {
     public String followSeller(@PathVariable("id") long id, Model model, HttpServletRequest request) {
         User seller = userService.findById(id);
 
-        if(seller == null || seller.getRole() != UserRole.SELLER)
+        if (seller == null || seller.getRole() != UserRole.SELLER)
             throw new IllegalArgumentException(new UserNotFoundException(id));
 
         userService.followSeller(seller);
         String referer = request.getHeader("Referer");
-        return "redirect:"+ referer;
+        return "redirect:" + referer;
     }
 
     @GetMapping("/un_follow_seller/{id}")
-    public String unFollowSeller(@PathVariable("id") long id, Model model, HttpServletRequest request) {
+    public String unFollowSeller(@PathVariable("id") long id, Model model, HttpServletRequest request,
+                                 RedirectAttributes redirectAttributes) {
         User seller = userService.findById(id);
 
-        if(seller == null || seller.getRole() != UserRole.SELLER)
+        if (seller == null || seller.getRole() != UserRole.SELLER)
             throw new IllegalArgumentException(new UserNotFoundException(id));
 
         userService.unFollowSeller(seller);
+        redirectAttributes.addFlashAttribute("successMessage", "Un-Following seller: " + seller.getFullName() + " is completed!");
         String referer = request.getHeader("Referer");
-        return "redirect:"+ referer;
+        return "redirect:" + referer;
     }
 
     @GetMapping("/orders/cancel/{id}")
@@ -172,13 +177,13 @@ public class BuyerController {
             return "redirect:/buyer/orders";
         }
 
-        if(!order.getBuyer().equals(util.getCurrentUser()) || order.getStatus() != OrderStatus.NEW)
-             return "redirect:/auth/denied";
+        if (!order.getBuyer().equals(util.getCurrentUser()) || order.getStatus() != OrderStatus.NEW)
+            return "redirect:/auth/denied";
 
         orderService.cancelOrder(order);
 
         String referer = request.getHeader("Referer");
-        return "redirect:"+ referer;
+        return "redirect:" + referer;
     }
 
     @GetMapping("/orders/print/{id}")
@@ -192,9 +197,9 @@ public class BuyerController {
 //        if(!order.getBuyer().equals(util.getCurrentUser()))
 //            return "redirect:/auth/denied";
 
-        String  htmlOder = this.orderService.generateInvoiceOrder(order);
+        String htmlOder = this.orderService.generateInvoiceOrder(order);
 
-        String outputFolder = "invoice"+id+".pdf";
+        String outputFolder = "invoice" + id + ".pdf";
         OutputStream outputStream = new FileOutputStream(outputFolder);
 
         ITextRenderer renderer = new ITextRenderer();
@@ -204,9 +209,9 @@ public class BuyerController {
         outputStream.close();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "inline; filename="+"invoice"+id+".pdf");
+        headers.add("Content-Disposition", "inline; filename=" + "invoice" + id + ".pdf");
 
-        File file = new File( outputFolder);
+        File file = new File(outputFolder);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         return ResponseEntity
@@ -215,4 +220,21 @@ public class BuyerController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(resource);
     }
+
+//    @GetMapping("/orders/confirm_purchase_order/{id}")
+//    public String confirmPurchaseOrder(@PathVariable("id") long id, Model model, HttpServletRequest request)
+//            throws IOException, DocumentException {
+//        Order order = orderService.findById(id);
+//        OrderResponse orderResponse = orderService.mapToOrderResponse(order);
+//
+//        model.addAttribute("orderResponse", orderResponse);
+//
+//        String carNumber = order.getCard().getCardNumber();
+//        String lastFourDigits = carNumber.substring(carNumber.length() - 4);
+//        model.addAttribute("lastFourDigitsCard", lastFourDigits);
+//
+////        this.emailService.sendConfirmPurchaseMessage(order);
+//
+//        return "/views/buyer/confirmPurchaseOrder";
+//    }
 }

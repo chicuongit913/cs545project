@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -35,7 +36,8 @@ public class AddressController {
 
     @PostMapping("/create")
     public String postCreateAddress(@Valid @ModelAttribute("addressRequest") AddressRequest addressRequest,
-                BindingResult bindingResult, @RequestParam("type") String type, Model model){
+                BindingResult bindingResult, @RequestParam("type") String type, Model model,
+                                    RedirectAttributes redirectAttributes){
 
         model.addAttribute("type", type);
 
@@ -43,12 +45,12 @@ public class AddressController {
             return "/views/buyer/address";
 
         this.addressService.createOrUpdate(addressRequest, type, util.getCurrentUser());
-
+        redirectAttributes.addFlashAttribute("successMessage", "Address is created!");
         return "redirect:/buyer/setting";
     }
 
     @GetMapping("/edit/{id}")
-    public String getEditAddress(@PathVariable("id") int id, Model model){
+    public String getEditAddress(@PathVariable("id") long id, Model model){
         Address address = this.addressService.findById(id);
 
         //throw address not found exception when address = null
@@ -68,7 +70,8 @@ public class AddressController {
 
     @PostMapping("/edit/{id}")
     public String postEditAddress(@Valid @ModelAttribute("addressRequest") AddressRequest addressRequest,
-                                  BindingResult bindingResult, @PathVariable("id") int id, Model model){
+                                  BindingResult bindingResult, @PathVariable("id") long id, Model model,
+                                  RedirectAttributes redirectAttributes){
 
         if(bindingResult.hasErrors())
             return "/views/buyer/address";
@@ -85,11 +88,12 @@ public class AddressController {
         BeanUtils.copyProperties(addressRequest, address);
         this.addressService.save(address);
 
+        redirectAttributes.addFlashAttribute("successMessage", "Address is updated!");
         return "redirect:/buyer/setting";
     }
 
     @GetMapping("/delete/{id}")
-    public String getDeleteAddress(@PathVariable("id") int id, Model model){
+    public String getDeleteAddress(@PathVariable("id") long id, Model model, RedirectAttributes redirectAttributes){
 
         Address address = this.addressService.findById(id);
 
@@ -100,8 +104,14 @@ public class AddressController {
         if(!address.getUser().getId().equals(util.getCurrentUser().getId()))
             return "redirect:/auth/denied";
 
-        this.addressService.delete(address);
+        try{
+            this.addressService.delete(address);
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Address can not delete because its using for order!");
+            return "redirect:/buyer/setting";
+        }
 
+        redirectAttributes.addFlashAttribute("successMessage", "Address is deleted!");
         return "redirect:/buyer/setting";
     }
 

@@ -1,48 +1,58 @@
 
 <!DOCTYPE html>
-<html lang="en" layout:decorate="~{layouts/layout}" xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml">
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Pending reviews</title>
 </head>
 <body>
+<!--<th:block layout:fragment="page-custom-js">-->
+<!--    <script type="text/javascript" th:src="@{/js/admin.js}"></script>-->
+<!--</th:block>-->
 <div id="contents" class="row" layout:fragment="main-content">
-    <div th:replace="components/userAccessMenu :: mnu">User menu</div>
-    <div class="col-lg-9">
+    <div class="d-flex flex-column mt-4 mb-4">
         <div class="h4">Pending reviews</div>
-        <table class="table">
+        <table class="table table-responsive table-striped">
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Buyer</th>
-                <th scope="col">Ordered product</th>
-                <th scope="col">Created date</th>
-                <th scope="col">Stars</th>
+                <th scope="col">Product</th>
+                <th scope="col">Reviewer</th>
+                <th scope="col" class="text-nowrap">Created date</th>
                 <th scope="col">Comment</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="review,iter : ${createdReviews}">
-                <th scope="row" th:text="${iter.index+1}">1</th>
-                <td th:text="${review.buyer}">Elzi</td>
-                <td th:text="${review.orderProduct}">Iphone11 Promax</td>
-                <td th:text="${review.createdDate}">07/10/2020</td>
-                <td th:text="${review.stars}">5</td>
-                <td th:text="${review.comment}">Good</td>
+                <td scope="row" th:text="${iter.index+1}">1</td>
+                </td>
                 <td>
-                    <a href="#" class="postReview" th:data-review-id="${review.id}">Post</a>
-                    <a href="#" class="declineReview" th:data-review-id="${review.id}">Decline</a>
+                    <div class="d-flex flex-row">
+                        <div class="col-md-2 pl-0">
+                            <img class="product-image w-100" th:src="${review.product.image}"/>
+                        </div>
+                        <div class="text-nowrap">
+                            <a th:text="${review.product.name}" th:href="@{/product/{id}(id=${review.product.id})}"
+                               th:target="blank"
+                            ></a>
+                        </div>
+                    </div>
+                </td>
+                <td th:text="${review.reviewer}"></td>
+                <td th:text="${review.createdDate}"></td>
+                <td th:text="${review.text}"></td>
+                <td>
+                    <div class="d-flex flex-row">
+                        <a href="#" class="postReview btn btn-success mr-1" th:data-review-id="${review.id}">Post</a>
+                        <a href="#" class="declineReview btn btn-danger" th:data-review-id="${review.id}">Decline</a>
+                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-
-<th:block layout:fragment="script">
-    <script th:src="@{/js/admin.js}"></script>
-</th:block>
 </body>
 </html>

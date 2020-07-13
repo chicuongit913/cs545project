@@ -23,4 +23,6 @@ public class ReviewResponse {
     private long id;
     private String text;
     private Date createdDate;
+    private String reviewer;
+    private ProductResponse product;
 }
