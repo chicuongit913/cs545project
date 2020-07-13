@@ -37,9 +37,10 @@ public class OrderServiceImpl implements OrderService {
     private Util util;
 
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, Util util) {
+    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
         this.util = util;
     }
 
@@ -144,7 +145,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponse mapToOrderResponse(Order order) {
         OrderResponse orderResponse = new OrderResponse();
-        BeanUtils.copyProperties(order, orderResponse, "id", "shippingAddress", "billingAddress");
+        BeanUtils.copyProperties(order, orderResponse, "shippingAddress", "billingAddress");
         orderResponse.setOrderCode(util.generateOrderCode(order.getId()));
         orderResponse.setBillingAddress(this.mapToBillingAddressResponse(order.getBillingAddress()));
         orderResponse.setShippingAddress(this.mapToShippingAddressResponse(order.getShippingAddress()));

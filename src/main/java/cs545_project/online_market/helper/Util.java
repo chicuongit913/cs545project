@@ -56,6 +56,10 @@ public class Util {
         return hashids.encode(id);
     }
 
+    public Long decodeOrderCode(String hash) {
+        return hashids.decode(hash)[0];
+    }
+
     public String generateImageName() {
         //Getting the current date
         Date date = new Date();
