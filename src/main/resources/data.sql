@@ -123,6 +123,20 @@ VALUES
 	(99, 'Lev', 'Duis@nonquam.edu', 'Juliet', 'Schroeder', '$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.', 'BUYER', '1'),
 	(100, 'Bernard', 'a.neque@idante.net', 'Karyn', 'Lott', '$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.', 'ADMIN', '1');
 
+-- Insert Seller : password is 123456 for all USER
+INSERT INTO `user` (`user_id`, `username`, `email`, `first_name`, `last_name`, `password`, `role`, `seller_status`,
+                    `active`)
+VALUES
+(1001, 'Clarke', 'nisl@acturpisegestas.org', 'Brynne', 'Aguirre',
+ '$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.', 'SELLER', 'NEW', '1'),
+(102, 'Brett', 'Phasellus.at@ut.ca', 'Orlando', 'Moody', '$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8' ||
+                                                        '.', 'SELLER', 'NEW', '0'),
+(103, 'Lev', 'Duis@nonquam.edu', 'Juliet', 'Schroeder',
+ '$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8' ||
+                                                       '.', 'SELLER', 'NEW', '0'),
+(104, 'Bernard', 'a.neque@idante.net', 'Karyn', 'Lott', '$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8' ||
+                                                        '.', 'SELLER', 'NEW', '0');
+
 -- Insert Product
 INSERT INTO `product` (`id`, `name`, `description`, `price`, `image`, `stock`, `createdDate`, `updatedDate`, `isInUse`)
 VALUES

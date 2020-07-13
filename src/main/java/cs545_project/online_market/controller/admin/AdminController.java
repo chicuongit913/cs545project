@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -31,16 +33,18 @@ public class AdminController {
         return "views/admin/pending_sellers";
     }
 
-    @PutMapping("/approve-seller/{sellerId}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void approveSeller(@PathVariable("sellerId") long sellerId) throws NotFoundException {
+    @GetMapping("/approve-seller/{sellerId}")
+    public String approveSeller(@PathVariable("sellerId") long sellerId, HttpServletRequest request) throws NotFoundException {
         sellerService.approveSeller(sellerId);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 
-    @PutMapping("/reject-seller/{sellerId}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void rejectSeller(@PathVariable("sellerId") long sellerId) throws NotFoundException {
+    @GetMapping("/reject-seller/{sellerId}")
+    public String rejectSeller(@PathVariable("sellerId") long sellerId, HttpServletRequest request) throws NotFoundException {
         sellerService.rejectSeller(sellerId);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 
 

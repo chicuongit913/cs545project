@@ -1,17 +1,20 @@
 
 <!DOCTYPE html>
-<html lang="en" layout:decorate="~{layouts/layout}" xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml">
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Pending sellers</title>
 </head>
 <body>
 <div id="contents" class="row" layout:fragment="main-content">
-    <div th:replace="components/userAccessMenu :: mnu">User menu</div>
-    <div class="col-lg-9">
+    <div class="d-flex flex-column mt-4 mb-4">
         <div class="h4">Pending sellers</div>
-        <table class="table">
+        <div class="mt-2" th:if="${pendingSellers == null || pendingSellers.isEmpty()}">
+            <span class="cus-text-light">There is no pending seller at the moment</span>
+        </div>
+        <table class="table table-responsive table-striped"
+               th:if="${pendingSellers != null && !pendingSellers.isEmpty()}">
             <thead>
             <tr>
                 <th scope="col">#</th>
@@ -23,20 +26,19 @@
             <tbody>
             <tr th:each="seller,iter : ${pendingSellers}">
                 <th scope="row" th:text="${iter.index+1}">1</th>
-                <td th:text="${seller.name}">Elizabeth</td>
-                <td th:text="${seller.email}">Elzi@gmail.com</td>
+                <td th:text="${seller.fullName}"></td>
+                <td th:text="${seller.email}"></td>
                 <td>
-                    <a href="#" class="approveSeller" th:data-seller-id="${seller.id}">Approve</a>
-                    <a href="#" class="rejectSeller" th:data-seller-id="${seller.id}">Reject</a>
+                    <div class="d-flex flex-row">
+                        <a th:href="@{/admin/approve-seller/{id}(id=${seller.id})}" class="btn shadow btn-success mr-1">
+                            Approve</a>
+                        <a th:href="@{/admin/reject-seller/{id}(id=${seller.id})}" class="btn shadow btn-danger">Reject</a>
+                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-
-<th:block layout:fragment="script">
-    <script th:src="@{/js/admin.js}"></script>
-</th:block>
 </body>
 </html>

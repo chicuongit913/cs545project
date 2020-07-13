@@ -42,6 +42,10 @@ public class User {
 	private int active;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "seller_status")
+	private SellerStatus sellerStatus;
+
+	@Enumerated(EnumType.STRING)
 	private UserRole role;
 
 	@OneToMany(mappedBy = "user")
