@@ -34,6 +34,7 @@ public class SellerController {
     private MultipartFile productImage;
     private String rootDirectory = System.getProperty("user.dir") + "\\images\\";
 
+
     @Autowired
     public SellerController(Util util, ProductService productService) {
         this.util = util;
@@ -44,7 +45,10 @@ public class SellerController {
 
     @GetMapping("/seller")
     public String getPage(Model model) {
-        ArrayList<Product> products = productService.getAllProducts();
+        Long id = util.getCurrentUser().getId();
+        ArrayList<Product> products = productService.getSellerProducts(id);
+//        ArrayList<Product> products = productService.getAllProducts();
+
         model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
@@ -69,7 +73,8 @@ public class SellerController {
             try {
                 productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
                 String path = rootDirectory + product.getName()+".png";
-                productService.saveProduct(product, path);
+                User seller = util.getCurrentUser();
+                productService.saveProduct(product, path, seller);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -99,7 +104,8 @@ public class SellerController {
                 productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
                 String path = rootDirectory + product.getName()+".png";
                 product.setId(productId);
-                productService.updateProduct(product, path);
+                User seller = util.getCurrentUser();
+                productService.updateProduct(product, path, seller);
 
             } catch (IOException e) {
                 e.printStackTrace();

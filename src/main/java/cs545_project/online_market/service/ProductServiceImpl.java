@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void saveProduct(ProductRequest productRequest, String path) {
+    public void saveProduct(ProductRequest productRequest, String path, User seller) {
         Product product = new Product();
         product.setImage(path);
         product.setName(productRequest.getName());
@@ -42,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
         product.setStock(productRequest.getStock());
         product.setCreatedDate(productRequest.getCreatedDate());
         product.setUpdatedDate(productRequest.getUpdatedDate());
+        product.setSeller(seller);
 
 
         productRepository.save(product);
@@ -51,6 +52,15 @@ public class ProductServiceImpl implements ProductService {
     public ArrayList<Product> getAllProducts() {
 
         return (ArrayList<Product>) productRepository.findAll();
+    }
+
+    @Override
+    public ArrayList<Product> getSellerProducts(Long id) {
+        ArrayList<Product> products= productRepository.findBySeller(id);
+        if (products.size()<0){
+            return null;
+        }
+        return products;
     }
 
     @Override
@@ -71,7 +81,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(ProductRequest productRequest, String path) {
+    public void updateProduct(ProductRequest productRequest, String path, User seller) {
         Product product = new Product();
 
         product.setImage(path);
@@ -81,6 +91,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
         product.setUpdatedDate(new Date());
+        product.setSeller(seller);
 
         productRepository.save(product);
     }
