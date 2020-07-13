@@ -9,6 +9,8 @@ import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.ProductService;
 import org.bouncycastle.math.raw.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,11 +18,14 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,8 +75,8 @@ public class SellerController {
         if (productImage != null && !productImage.isEmpty())
         {
             try {
-                productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
-                String path = rootDirectory + product.getName()+".png";
+                productImage.transferTo(new File(rootDirectory + product.getName() + ".png"));
+                String path = rootDirectory + product.getName() + ".png";
                 User seller = util.getCurrentUser();
                 productService.saveProduct(product, path, seller);
 
@@ -110,8 +115,8 @@ public class SellerController {
         {
             try {
                 String imageName = util.generateImageName();
-                productImage.transferTo(new File(rootDirectory + imageName+".png"));
-                String path = rootDirectory + product.getName()+".png";
+                productImage.transferTo(new File(rootDirectory + product.getName() + ".png"));
+                String path = rootDirectory + product.getName() + ".png";
                 product.setId(productId);
                 User seller = util.getCurrentUser();
                 productService.updateProduct(product, path, seller);
