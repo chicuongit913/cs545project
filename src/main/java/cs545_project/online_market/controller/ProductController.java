@@ -2,7 +2,6 @@ package cs545_project.online_market.controller;
 
 import cs545_project.online_market.controller.request.ReviewRequest;
 import cs545_project.online_market.controller.response.ProductResponse;
-import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.service.ProductService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

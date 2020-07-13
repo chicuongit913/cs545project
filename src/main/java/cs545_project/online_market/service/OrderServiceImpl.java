@@ -4,19 +4,18 @@ import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.OrderItemResponse;
 import cs545_project.online_market.controller.response.OrderResponse;
-import cs545_project.online_market.domain.*;
 import cs545_project.online_market.domain.BillingAddress;
 import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.CartItem;
 import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.OrderDetails;
+import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.OrderRepository;
 import cs545_project.online_market.repository.ProductRepository;
 import cs545_project.online_market.repository.UserRepository;
-import org.hashids.Hashids;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,10 +37,9 @@ public class OrderServiceImpl implements OrderService {
     private Util util;
 
     @Autowired
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Hashids hashids, Util util) {
+    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, Util util) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
-        this.orderRepository = orderRepository;
         this.util = util;
     }
 
@@ -56,33 +54,34 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = generateOrder(buyer, request, cart);
 
+        double total = order.total(), credit = 0, remainPoints = 0;
         if (request.isApplyCoupon()) {
-            double total = order.total(), credit = 0, remainPoints = 0;
-            if (total <= buyer.getPoints()) {
-                remainPoints = buyer.getPoints() - total;
+            if (total <= buyer.getAvailablePointsCredit()) {
+                remainPoints = buyer.getAvailablePointsCredit() - total;
             } else {
-                credit = order.total() - buyer.getPoints();
-                order.setCard(
-                    buyer.getCards()
-                        .stream()
-                    .filter(c -> c.getId() == request.getPaymentCard())
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Payment Card"))
-                );
+                credit = order.total() - buyer.getAvailablePointsCredit();
             }
-
-            buyer.setPoints(remainPoints);
-            order.setCredit(credit);
+        } else {
+            credit = total;
         }
 
+        order.setCard(
+            buyer.getCards()
+                .stream()
+                .filter(c -> c.getId().equals(request.getPaymentCard()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid Payment Card"))
+        );
+        buyer.setPoints(remainPoints * 100 + credit);
+        order.setCredit(credit);
         buyer.addOrder(order);
-        userRepository.save(buyer);
+        userRepository.save(buyer); // Save Order
+        productRepository.saveAll(
+            order.getOrderDetails()
+                .stream()
+                .map(OrderDetails::getProduct)
+                .collect(Collectors.toList())); // Update Products Stock
         return mapToOrderResponse(order);
-    }
-
-    @Override
-    public OrderResponse makeOrder(String buyerUserName, OrderRequest request) {
-        return null;
     }
 
     @Override
@@ -100,10 +99,11 @@ public class OrderServiceImpl implements OrderService {
             .stream()
             .map(this::generateOrderDetails)
             .collect(Collectors.toList());
+        order.setOrderDetails(items);
 
         ShippingAddress shippingAddress = buyer.getShippingAddresses()
             .stream()
-            .filter(addr -> addr.getId() == request.getShippingAddress())
+            .filter(addr -> addr.getId().equals(request.getShippingAddress()))
             .findFirst()
             .orElseGet(() -> {
                 ShippingAddress address = new ShippingAddress();
@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
 
         BillingAddress billingAddress = buyer.getBillingAddresses()
             .stream()
-            .filter(addr -> addr.getId() == request.getBillingAddress())
+            .filter(addr -> addr.getId().equals(request.getBillingAddress()))
             .findFirst()
             .orElseGet(() -> {
                 BillingAddress address = new BillingAddress();
@@ -122,9 +122,7 @@ public class OrderServiceImpl implements OrderService {
             });
         order.setBillingAddress(billingAddress);
         order.setShippingAddress(shippingAddress);
-        order.setOrderDetails(items);
         order.setReceiver(request.getReceiver());
-
         return order;
     }
 
@@ -136,6 +134,8 @@ public class OrderServiceImpl implements OrderService {
                     throw new IllegalArgumentException(
                         String.format("Product name %s only has %d item left", prod.getName(), prod.getStock()));
                 }
+
+                prod.setStock(prod.getStock() - cartItem.getQuantity());
                 return new OrderDetails(prod, cartItem.getQuantity(), prod.getPrice());
             })
             .orElseThrow(() -> new IllegalArgumentException("Product not found"));
@@ -143,22 +143,18 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponse mapToOrderResponse(Order order) {
         OrderResponse orderResponse = new OrderResponse();
+        BeanUtils.copyProperties(order, orderResponse, "id", "shippingAddress", "billingAddress");
         orderResponse.setOrderCode(util.generateOrderCode(order.getId()));
         orderResponse.setBillingAddress(this.mapToBillingAddressResponse(order.getBillingAddress()));
         orderResponse.setShippingAddress(this.mapToShippingAddressResponse(order.getShippingAddress()));
-        orderResponse.setCredit(order.getCredit());
-        orderResponse.setPoints(order.getPoints());
-        orderResponse.setTotal(order.total());
-        orderResponse.setReceiver(order.getReceiver());
-        orderResponse.setStatus(order.getStatus());
-        orderResponse.setCreatedDate(order.getCreatedDate());
-        orderResponse.setId(order.getId());
+        orderResponse.setEarnedPoints(order.getCredit());
         orderResponse.setOrderItems(
             order.getOrderDetails()
                 .stream()
                 .map(this::mapToOrderItemResponse)
                 .collect(Collectors.toList())
         );
+        orderResponse.setTotal(order.total());
         return orderResponse;
     }
 

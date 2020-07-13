@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <title>Orders</title>
+  <link th:href="@{/css/orders.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<th:block layout:fragment="page-custom-js">
+  <script type="text/javascript" th:src="@{/js/buyer/orders.js}"></script>
+</th:block>
+
+<div class="col" layout:fragment="main-content">
+  <div id="order-container">
+    <div class="d-flex flex-column mt-5 mb-5">
+      <div class="col-12">
+        <h2 class="text-success text-center">Congratulations !!! You got <span th:text="${points}"></span> point(s)!</h2>
+        <h4 class="text-info text-center">Your order is in processing!</h4>
+        <div class="justify-content-center d-flex align-items-center mt-4">
+          <a class="btn btn-info mr-2" th:href="@{/}">Continue Shopping</a>
+          <a th:href="@{/buyer/orders}">My Orders</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

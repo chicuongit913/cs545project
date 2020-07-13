@@ -10,7 +10,6 @@ import java.util.List;
  * @author knguyen93
  */
 public interface OrderService {
-    OrderResponse makeOrder(String buyerUserName, OrderRequest request);
     List<OrderResponse> getOrdersOfCurrentUser();
     Order findById(long id);
     Order cancelOrder(Order order);

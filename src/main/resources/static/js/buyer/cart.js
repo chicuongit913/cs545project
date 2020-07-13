@@ -13,19 +13,18 @@ $(document).ready(function() {
 				swal({
 					icon: "success",
 					title: "Great!",
-					text: productName + " is added to your card.",
+					text: productName + " is added to your cart.",
 					buttons: {
 						cancel: "Continue shopping",
 						checkout: "Checkout"
 					}
 				}).then((value) => {
 					switch (value) {
-
 						case "checkout":
 							window.location.href = "/buyer/cart";
 							break;
 					}
-				});;
+				});
 			},
 			error: function(){
 				swal("something went wrong!","error");

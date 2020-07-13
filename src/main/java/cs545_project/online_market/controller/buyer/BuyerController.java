@@ -7,6 +7,7 @@ import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.CardResponse;
 import cs545_project.online_market.controller.response.CheckoutUserResponse;
+import cs545_project.online_market.controller.response.OrderResponse;
 import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -92,18 +94,22 @@ public class BuyerController {
 
     private void setupCheckoutData(OrderRequest orderRequest, Model model) {
         CheckoutUserResponse userForCheckout = userService.getUserForCheckout();
-        orderRequest.setReceiver(userForCheckout.getName());
-        orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
-        orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
-        orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
+        if (userForCheckout != null) {
+            orderRequest.setReceiver(userForCheckout.getName());
+            orderRequest.setBillingAddress(Optional.ofNullable(userForCheckout.getBillingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+            orderRequest.setShippingAddress(Optional.ofNullable(userForCheckout.getShippingAddresses()).map(addr -> addr.get(0)).orElseGet(AddressResponse::new).getId());
+            orderRequest.setPaymentCard(Optional.ofNullable(userForCheckout.getCards()).map(cards -> cards.get(0)).orElseGet(CardResponse::new).getId());
+        }
         model.addAttribute("checkout_user", userForCheckout);
     }
 
     @PostMapping("/order")
-    public String placeOrder(@Valid OrderRequest orderRequest, HttpServletRequest request, Model model) {
+    public String placeOrder(@Valid OrderRequest orderRequest, HttpServletRequest request, Model model,
+                             RedirectAttributes attributes) {
         try {
             String cartId = Util.extractCartId(request);
-            orderService.placeOrder(orderRequest, cartService.read(cartId));
+            OrderResponse orderResponse = orderService.placeOrder(orderRequest, cartService.read(cartId));
+            attributes.addFlashAttribute("points", orderResponse.getEarnedPoints());
             cartService.emptyCart(cartId);
             model.addAttribute("cart", cartService.read(cartId));
         } catch (IllegalArgumentException ex) {
@@ -112,7 +118,12 @@ public class BuyerController {
             return "views/buyer/checkout";
         }
 
-        return "/views/buyer/cart";
+        return "redirect:/buyer/order-success";
+    }
+
+    @GetMapping("/order-success")
+    public String orderedSuccessful(Model model) {
+        return "views/buyer/order-success";
     }
 
     @GetMapping("/orders")

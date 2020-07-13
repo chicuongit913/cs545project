@@ -18,47 +18,71 @@
       <div class="col-12">
         <h2>Your orders</h2>
       </div>
-
-      <div class="d-flex justify-content-between flex-wrap mt-5 mb-3">
-        <span class="col-1 font-weight-bolder">Order</span>
-        <span class="col-2 font-weight-bolder" >Status</span>
-        <span class="col-2 font-weight-bolder">Total</span>
-        <span class="col-2 font-weight-bolder">Ship to</span>
-        <span class="col-2 font-weight-bolder">Created</span>
-        <span class="col-3 font-weight-bolder">Action</span>
+      <div class="col-12 mt-5 mb-3" th:if="${orders == null || orders.empty}">
+        <h4 class="cus-text-light">You haven't order anything yet. Click here to
+          <a th:href="@{/}">continue shopping</a></h4>
+      </div>
+      <div class="col-12 mt-5 mb-3" th:if="${orders != null && !orders.empty}">
+        <div class="row col-12">
+          <div class="col-1 text-center">
+            <span class="font-weight-bolder">Order</span>
+          </div>
+          <div class="col-2 text-center">
+            <span class="font-weight-bolder">Status</span>
+          </div>
+          <div class="col-2 text-center">
+            <span class="font-weight-bolder">Total</span>
+          </div>
+          <div class="col-2 text-center">
+            <span class="font-weight-bolder">Ship to</span>
+          </div>
+          <div class="col-3 text-center">
+            <span class="font-weight-bolder">Order Date</span>
+          </div>
+          <div class="col-2 text-center">
+            <span class="font-weight-bolder">Action</span>
+          </div>
+        </div>
       </div>
       <div th:each="order : ${orders}" class="col-12 pt-2 pb-2">
         <div class="card">
           <div class="card-header">
             <div class="d-flex justify-content-between flex-wrap">
-              <span class="col-1" th:text="'#'+${orderStat.count}"></span>
-
-              <span th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}" class="col-2" >
-                    <a href="#" class="btn btn-sm btn-outline-primary" th:text="${order.status}"></a>
-                  </span>
-              <span th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}" class="col-2" >
-                    <a href="#" class="btn btn-sm btn-outline-danger" th:text="${order.status}"></a>
-                  </span>
-              <span th:unless="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}
-              or ${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}" class="col-2" >
-                    <a href="#" class="btn btn-sm btn-outline-info" th:text="${order.status}"></a>
-              </span>
-
-              <span class="col-2" th:text="'$ ' + ${order.total}"></span>
-                  <span class="col-2" th:text="${order.receiver}"></span>
-                  <span class="col-2" th:text="${order.createdDate}"></span>
-                  <span class="col-3">
-                    <a class="btn btn-info btn-sm text-white" data-toggle="collapse" th:data-target="'#detail_order_' + ${order.hashCode()}" aria-expanded="true">
-                      <i class="fa fa-expand" ></i>
-                    </a>
-                    <a class="btn btn-primary btn-sm" target="_blank" th:href="@{/buyer/orders/print/{id}(id = ${order.getId()})}">
-                      <i class="fa fa-print" ></i>
-                    </a>
-                    <a th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
-                       class="btn btn-danger btn-sm" th:href="@{/buyer/orders/cancel/{id}(id = ${order.getId()})}">
-                      <i class="fa fa-remove" ></i>
-                    </a>
-                  </span>
+              <div class="col-1">
+                <span th:text="'#'+${orderStat.count}"></span>
+              </div>
+              <div class="col-2">
+                <div th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                      class="border border-primary text-primary rounded w-75 text-center" th:text="${order.status}"></div>
+                <div th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
+                      class="border border-danger text-danger rounded w-75 text-center" th:text="${order.status}"></div>
+                <div th:unless="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}
+              or ${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
+                      class="border border-info text-info rounded w-75 text-center" th:text="${order.status}"></div>
+              </div>
+              <div class="col-2">
+                <span th:text="'$ ' + ${order.total}"></span>
+              </div>
+              <div class="col-2">
+                <span th:text="${order.receiver}"></span>
+              </div>
+              <div class="col-3">
+                <span th:text="${order.createdDate}"></span>
+              </div>
+              <div class="col-2">
+                <a class="btn btn-info btn-sm text-white" data-toggle="collapse"
+                   th:data-target="'#detail_order_' + ${order.hashCode()}" aria-expanded="true">
+                  <i class="fa fa-expand"></i>
+                </a>
+                <a class="btn btn-primary btn-sm" target="_blank"
+                   th:href="@{/buyer/orders/print/{id}(id = ${order.getId()})}">
+                  <i class="fa fa-print"></i>
+                </a>
+                <a th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                   class="btn btn-danger btn-sm" th:href="@{/buyer/orders/cancel/{id}(id = ${order.getId()})}">
+                  <i class="fa fa-remove"></i>
+                </a>
+              </div>
             </div>
           </div>
           <div th:id="'detail_order_' + ${order.hashCode()}" class="collapse">

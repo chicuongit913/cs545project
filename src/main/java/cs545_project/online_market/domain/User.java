@@ -76,6 +76,10 @@ public class User {
 	@Column(nullable = true, columnDefinition="int(1) default '0'")
 	private double points;
 
+	public double getAvailablePointsCredit() {
+		return points/100;
+	}
+
 	public void addProduct(Product product) {
 		this.products.add(product);
 	}

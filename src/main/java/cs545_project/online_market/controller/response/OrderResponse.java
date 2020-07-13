@@ -20,6 +20,7 @@ public class OrderResponse {
     private double points;
     private Date createdDate;
     private String receiver;
+    private double earnedPoints;
     private AddressResponse shippingAddress;
     private AddressResponse billingAddress;
     private List<OrderItemResponse> orderItems;
