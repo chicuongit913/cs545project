@@ -31,7 +31,6 @@
         <div class="card">
           <div class="card-header">
             <div class="d-flex justify-content-between flex-wrap">
-<<<<<<< HEAD
               <span class="col-1" th:text="'#'+${orderStat.count}"></span>
 
               <span th:if="${order.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}" class="col-2" >
@@ -68,53 +67,6 @@
                 <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap">
                   <div class="col-md-2">
                     <img class="prod-image" th:src="${item.image}">
-=======
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light" th:text="${order.status}"></span>
-                </div>
-                <div>
-                  <span class="cus-text-light" th:text="${order.updatedDate}"></span>
-                </div>
-              </div>
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light">TOTAL</span>
-                </div>
-                <div>
-                  <span class="cus-text-light" th:text="${order.total}"></span>
-                </div>
-              </div>
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light">SHIP TO</span>
-                </div>
-                <div>
-                  <a href="#" th:text="${order.receiver}" data-toggle="popover" data-trigger="focus"
-                        title="Address" th:data-content="${order.shippingAddress.beautyAddress}"></a>
-                </div>
-              </div>
-              <div class="flex-column mb-2">
-                <div>
-                  <span class="cus-text-light">ORDER</span><span th:text="' #' + ${order.orderCode}"></span>
-                </div>
-                <div>
-                  <a href="#">Order Details</a>
-                  <a href="#" class="border-left border-grey pl-2">Invoice</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="d-flex flex-column">
-              <div th:each="item : ${order.orderItems}" class="d-flex flex-wrap mb-2">
-                <div class="col-md-2">
-                  <img class="prod-image" th:src="${item.image}">
-                </div>
-                <div class="col-md-10 flex-column">
-                  <div>
-                    <a th:href="@{/product/{id}(id=${item.productId})}" th:text="${item.productName}"></a>
->>>>>>> a59569342688b241ae998072450a4352f082a91e
                   </div>
                   <div class="col-md-10 flex-column">
                     <div>

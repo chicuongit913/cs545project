@@ -32,7 +32,7 @@ public class SellerController {
     private Util util;
     private ProductService productService;
     private MultipartFile productImage;
-    private String rootDirectory = System.getProperty("user.dir") + "\\images\\";
+    private String rootDirectory = System.getProperty("user.dir") + "\\images\\products\\";
 
     @Autowired
     public SellerController(Util util, ProductService productService) {
@@ -67,8 +67,9 @@ public class SellerController {
         if (productImage != null && !productImage.isEmpty())
         {
             try {
-                productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
-                String path = rootDirectory + product.getName()+".png";
+                String imageName = util.generateImageName();
+                productImage.transferTo(new File(rootDirectory + imageName+".png"));
+                String path = "/images/products/" + imageName+".png";
                 productService.saveProduct(product, path);
 
             } catch (IOException e) {
@@ -96,8 +97,9 @@ public class SellerController {
         if (productImage != null && !productImage.isEmpty())
         {
             try {
-                productImage.transferTo(new File(rootDirectory + product.getName()+".png"));
-                String path = rootDirectory + product.getName()+".png";
+                String imageName = util.generateImageName();
+                productImage.transferTo(new File(rootDirectory + imageName+".png"));
+                String path = "/images/products/" + imageName+".png";
                 product.setId(productId);
                 productService.updateProduct(product, path);
 

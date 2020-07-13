@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Component
 public class Util {
@@ -53,6 +54,14 @@ public class Util {
 
     public String generateOrderCode(long id) {
         return hashids.encode(id);
+    }
+
+    public String generateImageName() {
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long timeMilli = date.getTime();
+        return String.valueOf(timeMilli);
     }
 }
 
