@@ -4,9 +4,7 @@ import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.OrderItemResponse;
 import cs545_project.online_market.controller.response.OrderResponse;
-<<<<<<< HEAD
 import cs545_project.online_market.domain.*;
-=======
 import cs545_project.online_market.domain.BillingAddress;
 import cs545_project.online_market.domain.Cart;
 import cs545_project.online_market.domain.CartItem;
@@ -14,7 +12,6 @@ import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.OrderDetails;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
->>>>>>> a59569342688b241ae998072450a4352f082a91e
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.OrderRepository;
 import cs545_project.online_market.repository.ProductRepository;
@@ -41,14 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private Util util;
 
     @Autowired
-<<<<<<< HEAD
-    Util util;
-
-    @Autowired
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Hashids hashids) {
-=======
-    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Util util) {
->>>>>>> a59569342688b241ae998072450a4352f082a91e
+    public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository, OrderRepository orderRepository, Hashids hashids, Util util) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
@@ -88,6 +78,11 @@ public class OrderServiceImpl implements OrderService {
         buyer.addOrder(order);
         userRepository.save(buyer);
         return mapToOrderResponse(order);
+    }
+
+    @Override
+    public OrderResponse makeOrder(String buyerUserName, OrderRequest request) {
+        return null;
     }
 
     @Override
@@ -155,12 +150,9 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setPoints(order.getPoints());
         orderResponse.setTotal(order.total());
         orderResponse.setReceiver(order.getReceiver());
-<<<<<<< HEAD
         orderResponse.setStatus(order.getStatus());
         orderResponse.setCreatedDate(order.getCreatedDate());
         orderResponse.setId(order.getId());
-=======
->>>>>>> a59569342688b241ae998072450a4352f082a91e
         orderResponse.setOrderItems(
             order.getOrderDetails()
                 .stream()
