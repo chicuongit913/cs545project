@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void saveProduct(ProductRequest productRequest) throws IOException {
+    public ProductResponse saveProduct(ProductRequest productRequest) throws IOException {
         User seller = Optional.ofNullable(util.getCurrentUser())
             .filter(u -> UserRole.SELLER.equals(u.getRole()))
             .orElseThrow(() -> new IllegalArgumentException("Only Seller can add new product"));
@@ -60,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
         product.setStock(productRequest.getStock());
         product.setSeller(seller);
         productRepository.save(product);
+        return this.apply(product);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) {
         return productRepository.findById(id)
             .map(this::apply)
-            .orElseGet(ProductResponse::new);
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Product Id"));
     }
 
     @Override
@@ -125,7 +126,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(ProductRequest productRequest) throws IOException {
+    public ProductResponse updateProduct(ProductRequest productRequest) throws IOException {
         User seller = Optional.ofNullable(util.getCurrentUser())
             .filter(u -> UserRole.SELLER.equals(u.getRole()))
             .orElseThrow(() -> new IllegalArgumentException("Only Seller can update product"));
@@ -152,6 +153,7 @@ public class ProductServiceImpl implements ProductService {
             })
             .orElseThrow(() -> new IllegalArgumentException("Invalid Product Id"));
         productRepository.save(product);
+        return this.apply(product);
     }
 
     public ProductResponse postReview(Long id, ReviewRequest reviewRequest) {

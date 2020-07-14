@@ -12,13 +12,13 @@ import java.util.List;
 
 
 public interface ProductService {
-    void saveProduct(ProductRequest productRequest) throws IOException ;
+    ProductResponse saveProduct(ProductRequest productRequest) throws IOException ;
     List<ProductResponse> getSellerProducts(Long id);
     List<ProductResponse> getAllProducts();
     Product findById(Long productId);
     ProductResponse getProductById(Long id);
     void deleteProduct(Long productId);
-    void updateProduct(ProductRequest productRequest) throws IOException;
+    ProductResponse updateProduct(ProductRequest productRequest) throws IOException;
     ProductResponse postReview(Long id, ReviewRequest reviewRequest);
     void deleteProductByAdmin(Long productId);
     List<ProductResponse> getAllUnUsedProducts();

@@ -4,6 +4,7 @@ import cs545_project.online_market.interceptor.UserInterceptor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.LocaleResolver;
@@ -41,6 +42,11 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
         messageSource.setBasenames("messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
+    }
+
+    @Bean
+    public MessageSourceAccessor sourceAccessor(MessageSource messageSource) {
+        return new MessageSourceAccessor(messageSource);
     }
 
     @Bean

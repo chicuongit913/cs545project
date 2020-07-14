@@ -1,6 +1,7 @@
 package cs545_project.online_market.controller.seller;
 
 import cs545_project.online_market.controller.request.ProductRequest;
+import cs545_project.online_market.controller.response.ProductResponse;
 import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.helper.Util;
@@ -45,7 +46,7 @@ public class SellerController {
 
     @GetMapping("/add-product")
     public String getAll(Model model) {
-        model.addAttribute("product", new Product());
+        model.addAttribute("product", new ProductRequest());
         return "views/seller/add-product";
     }
 
