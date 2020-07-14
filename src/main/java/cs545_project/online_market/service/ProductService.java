@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 
 public interface ProductService {
-    public void saveProduct(ProductRequest productRequest, String path, User seller);
-    public ArrayList<Product> getAllProducts();
-    public ArrayList<Product> getSellerProducts(Long id);
-    public Product findById(Long productId);
+    void saveProduct(ProductRequest productRequest, String path, User seller);
+    ArrayList<Product> getAllProducts();
+    ArrayList<Product> getSellerProducts(Long id);
+    Product findById(Long productId);
     ProductResponse getProductById(Long id);
-    public void deleteProduct(Long productId);
-    public void updateProduct(ProductRequest productRequest, String path, User seller);
+    void deleteProduct(Long productId);
+    void updateProduct(ProductRequest productRequest, String path, User seller);
     ProductResponse postReview(Long id, ReviewRequest reviewRequest);
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -103,8 +104,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid Product Id"));
+        User buyer = Optional.ofNullable(util.getCurrentUser()).orElseThrow(() -> new IllegalArgumentException(
+            "Only Buyer can post product review"));
         Review review = new Review();
-        review.setReviewer(util.getCurrentUser());
+        review.setReviewer(buyer);
         review.setText(reviewRequest.getReview());
         product.addReview(review);
         return apply(productRepository.save(product));

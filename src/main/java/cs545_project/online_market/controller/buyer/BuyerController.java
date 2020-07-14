@@ -1,8 +1,8 @@
 package cs545_project.online_market.controller.buyer;
 
 import com.lowagie.text.DocumentException;
+import cs545_project.online_market.controller.request.ReviewRequest;
 import cs545_project.online_market.domain.Order;
-import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.controller.request.CartRequest;
 import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
@@ -17,15 +17,16 @@ import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.CartService;
 import cs545_project.online_market.service.EmailService;
 import cs545_project.online_market.service.OrderService;
+import cs545_project.online_market.service.ProductService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -42,16 +43,30 @@ public class BuyerController {
     private CartService cartService;
     private UserService userService;
     private EmailService emailService;
+    private ProductService productService;
     private Util util;
 
     @Autowired
     public BuyerController(CartService cartService, OrderService orderService,
-                           UserService userService, EmailService emailService, Util util) {
+                           UserService userService, EmailService emailService, ProductService productService, Util util) {
         this.orderService = orderService;
         this.cartService = cartService;
         this.userService = userService;
         this.emailService = emailService;
+        this.productService = productService;
         this.util = util;
+    }
+
+    @PostMapping("/product-review/{productId}")
+    public String postReview(@PathVariable Long productId, @Valid ReviewRequest reviewRequest, BindingResult bindingResult,
+                             Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", productService.getProductById(productId));
+            return "views/product/product-details";
+        } else {
+            productService.postReview(productId, reviewRequest);
+            return "redirect:/product/" + productId;
+        }
     }
 
     @GetMapping("/cart")
