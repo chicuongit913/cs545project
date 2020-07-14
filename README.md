@@ -18,20 +18,19 @@
 
 ## How to installation project
 ### 1. Pull project package
-
-	```sh
-	    $ git clone https://github.com/chicuongit913/cs545project.git
-	```
+```sh
+    $ git clone https://github.com/chicuongit913/cs545project.git
+```
 
 ### 2. Deploy project
-	```sh
-        java -jar path_to_project/build_file/online_market.jar
-    ```
+```sh
+    java -jar path_to_project/build_file/online_market.jar
+```
  
 ### 3. Access to project 
-    ```sh
-        http://127.0.0.1:8082
-    ```
+```sh
+    http://127.0.0.1:8082
+```
     
     
 ## You login to project
