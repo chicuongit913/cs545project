@@ -152,11 +152,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUserFollowSeller(User seller) {
+    public boolean isUserFollowSeller(Long sellerId) {
         User user = util.getCurrentUser();
         if(user == null)
             return false;
+        User seller = userRepository.findById(sellerId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Seller Id"));
         return user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
+    }
+
+    @Override
+    public boolean isUserFollowSeller(User seller) {
+        User user = util.getCurrentUser();
+        return user != null || user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
     }
 
     @Override

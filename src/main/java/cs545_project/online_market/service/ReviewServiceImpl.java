@@ -5,14 +5,11 @@ import cs545_project.online_market.controller.response.ReviewResponse;
 import cs545_project.online_market.domain.Review;
 import cs545_project.online_market.domain.ReviewStatus;
 import cs545_project.online_market.repository.ReviewRepository;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

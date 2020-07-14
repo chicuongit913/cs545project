@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Products Management</title>
+  <link th:href="@{/css/seller.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="col mt-3" layout:fragment="main-content">
+  <div th:if="${product_error}" class="alert alert-danger" th:text="${product_error}"></div>
+  <div th:if="${message}" th:text="${message}" class="alert alert-success"></div>
+  <div class="col mt-2">
+    <a href="/seller/add-product" class="btn btn-primary shadow" style="margin-top: 5px">
+      <i class="fa fa-plus mr-1"></i>Add Product
+    </a>
+  </div>
+  <div id="product-container">
+    <div class="d-flex flex-column mt-4 mb-4">
+      <div class="h4 col">Products Management</div>
+      <div class="d-flex flex-wrap mt-3 font-weight-bolder border-bottom mb-3 pb-3">
+        <div class="col-md-1">Image</div>
+        <div class="col-md-5">Product</div>
+        <div class="col-md-2">Price</div>
+        <div class="col-md-2">Seller</div>
+        <div class="col-md-2">Actions</div>
+      </div>
+
+      <div class="d-flex flex-column">
+        <div th:each="product : ${sellerProducts}" class="d-flex flex-wrap order-item pb-2 pt-2 border-bottom">
+          <div class="col-md-1">
+            <img class="img-thumbnail" th:src="${product.image}">
+          </div>
+          <div class="col-md-5 d-flex flex-wrap align-items-center">
+            <div>
+              <a th:href="@{/product/{id}(id=${product.id})}" th:text="${product.name}"></a>
+            </div>
+          </div>
+          <div class="col-md-2 d-flex flex-wrap align-items-center">
+            <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${product.price}"></span>
+          </div>
+          <div class="col-md-2 d-flex flex-wrap align-items-center">
+            <span class="badge badge-light text-danger p-2" th:text="${product.seller.fullName}"></span>
+          </div>
+          <div class="btn-group col-md-2 d-flex flex-wrap align-items-center">
+            <a th:href="@{/seller/update-product/{productId}(productId = ${product.id})}"
+               class="border border-info text-info rounded w-75 text-center mr-1"><i class="fa fa-edit mr-1"></i>Edit
+            </a><br>
+            <a th:if="${!product.isInUse()}" th:href="@{/seller/delete-product/{productId}(productId = ${product.id})}"
+               class="border border-info text-danger rounded w-75 text-center">
+              <i class="fa fa-remove mr-1"></i>Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

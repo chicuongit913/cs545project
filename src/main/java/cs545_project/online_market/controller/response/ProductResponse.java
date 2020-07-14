@@ -1,6 +1,5 @@
 package cs545_project.online_market.controller.response;
 
-import cs545_project.online_market.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,15 @@ public class ProductResponse {
 
     private String image;
 
+    public String getImage() {
+        return image != null && image.startsWith("http")
+            ? image
+            : String.format("/product_images/%s.png", image);
+    }
+
+    private boolean isInUse;
+
     private List<ReviewResponse> reviews = new ArrayList<>();
 
-    private User seller;
+    private SellerResponse seller;
 }

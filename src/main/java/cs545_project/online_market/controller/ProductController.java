@@ -36,7 +36,7 @@ public class ProductController {
     public String productDetails(@PathVariable Long id, ReviewRequest reviewRequest, Model model) {
         ProductResponse product = productService.getProductById(id);
         model.addAttribute("product", product);
-        model.addAttribute("isFollow", userService.isUserFollowSeller(product.getSeller()));
+        model.addAttribute("isFollow", userService.isUserFollowSeller(product.getSeller().getId()));
         return "views/product/product-details";
     }
 }

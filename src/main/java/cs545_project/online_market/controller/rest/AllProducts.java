@@ -16,9 +16,8 @@ public class AllProducts {
     @Autowired
     private ProductService productService;
 
-
     @GetMapping
     public ArrayList<Product> getAllProducts() {
-    return productService.getAllProducts();
+        return null;
     }
 }

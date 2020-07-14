@@ -20,6 +20,7 @@ public interface UserService extends FieldValueExists{
     User createUser(UserRequest user, UserRole userRole, int active);
     User createSeller(UserRequest userRequest);
     User createBuyer(UserRequest userRequest);
+    boolean isUserFollowSeller(Long sellerId);
     boolean isUserFollowSeller(User seller);
     CheckoutUserResponse getUserForCheckout();
 }

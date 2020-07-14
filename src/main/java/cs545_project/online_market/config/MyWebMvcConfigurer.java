@@ -56,7 +56,7 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer {
         registry.addInterceptor(new UserInterceptor());
     }
 
-    public static String uploadDirectory= System.getProperty("user.dir") + "\\images";
+    public static String uploadDirectory= System.getProperty("user.dir") + "/images/";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

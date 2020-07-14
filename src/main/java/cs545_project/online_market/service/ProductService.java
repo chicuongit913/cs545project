@@ -6,17 +6,18 @@ import cs545_project.online_market.controller.response.ProductResponse;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.domain.User;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 
 public interface ProductService {
-    void saveProduct(ProductRequest productRequest, String path, User seller);
-    ArrayList<Product> getAllProducts();
-    ArrayList<Product> getSellerProducts(Long id);
+    void saveProduct(ProductRequest productRequest) throws IOException ;
+    List<ProductResponse> getSellerProducts(Long id);
+    List<ProductResponse> getAllProducts();
     Product findById(Long productId);
     ProductResponse getProductById(Long id);
     void deleteProduct(Long productId);
-    void updateProduct(ProductRequest productRequest, String path, User seller, Date creationDate);
+    void updateProduct(ProductRequest productRequest) throws IOException;
     ProductResponse postReview(Long id, ReviewRequest reviewRequest);
 }
