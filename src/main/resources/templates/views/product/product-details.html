@@ -75,7 +75,7 @@
             </div>
           </div>
           <div class="post-review-form col-6" th:if="${user_name} and ${user_role} == 'BUYER'">
-            <form action="#" th:action="@{/product/{id}/review(id=${product.id})}" method="post"
+            <form action="#" th:action="@{/buyer/product-review/{id}(id=${product.id})}" method="post"
                   th:object="${reviewRequest}">
               <h4>Post a Review</h4>
               <div>
