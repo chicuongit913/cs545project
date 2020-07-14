@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(ProductRequest productRequest, String path, User seller) {
+    public void updateProduct(ProductRequest productRequest, String path, User seller, Date date) {
         Product product = new Product();
 
         product.setImage(path);
@@ -95,6 +95,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
         product.setUpdatedDate(new Date());
+        product.setCreatedDate(date);
         product.setSeller(seller);
 
         productRepository.save(product);

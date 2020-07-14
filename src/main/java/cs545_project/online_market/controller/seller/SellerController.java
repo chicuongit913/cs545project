@@ -18,6 +18,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 @RequestMapping("/seller")
@@ -98,7 +99,9 @@ public class SellerController {
                 String path = rootDirectory + product.getName() + ".png";
                 product.setId(productId);
                 User seller = util.getCurrentUser();
-                productService.updateProduct(product, path, seller);
+                Product p=productService.findById(productId);
+                System.out.println(p.getCreatedDate());
+                productService.updateProduct(product, path, seller, p.getCreatedDate());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -113,7 +116,7 @@ public class SellerController {
 
 
     @GetMapping(value = "/delete-product/{productId}")
-    public String updateProduct(@PathVariable long productId, Model model) {
+    public String deleteProduct(@PathVariable long productId, Model model) {
         Product product = productService.findById(productId);
 
         if (product.isInUse() == true) {
