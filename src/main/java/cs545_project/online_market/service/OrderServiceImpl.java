@@ -210,6 +210,7 @@ public class OrderServiceImpl implements OrderService {
         OrderDetails orderDetail = order.getOrderDetails().stream().filter(oi -> oi.getId() == itemId).findFirst().orElseGet(null);
         if(orderDetail != null && orderDetail.getStatus().equals(OrderStatus.NEW)) {
             orderDetail.setStatus(OrderStatus.CANCELED);
+            this.updatePointWhenCancelOrder(orderDetail);
         }
 
         return this.orderRepository.save(order);
@@ -258,6 +259,16 @@ public class OrderServiceImpl implements OrderService {
         if(orderDetail != null && orderDetail.getProduct().getSeller().equals(util.getCurrentUser())) {
             orderDetail.setStatus(status);
             this.orderDetailRepository.save(orderDetail);
+            if (status.equals(OrderStatus.CANCELED))
+                this.updatePointWhenCancelOrder(orderDetail);
         }
+    }
+
+    private void updatePointWhenCancelOrder(OrderDetails orderDetail){
+        User buyer = orderDetail.getOrder().getBuyer();
+        double orderItemPrice = orderDetail.getPrice();
+        double buyerPoints = buyer.getPoints();
+        buyer.setPoints(buyerPoints - orderItemPrice);
+        this.userRepository.save(buyer);
     }
 }

@@ -13,7 +13,7 @@
 
 <div class="col" layout:fragment="main-content">
     <div class="row mt-5">
-        <h2>Setting Page</h2>
+        <h2>Setting Page <small th:text="'(Your points: ' + ${user.points} +')'"> </small></h2>
     </div>
     <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success" role="alert"></div>
     <div th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-danger" role="alert"></div>

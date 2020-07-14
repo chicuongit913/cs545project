@@ -145,11 +145,11 @@
               || checkout_user.cards.isEmpty()}">
           Place order
         </span>
-        <button type="submit" th:if="${checkout_user.billingAddresses == null
+        <button type="submit" th:if="${checkout_user.billingAddresses != null
               && !checkout_user.billingAddresses.isEmpty()
-              && checkout_user.shippingAddresses == null
+              && checkout_user.shippingAddresses != null
               && !checkout_user.shippingAddresses.isEmpty()
-              && checkout_user.cards == null
+              && checkout_user.cards != null
               && !checkout_user.cards.isEmpty()}"
                 class="col-4 btn btn-success rounded shadow text-capitalize">Place order</button>
       </div>

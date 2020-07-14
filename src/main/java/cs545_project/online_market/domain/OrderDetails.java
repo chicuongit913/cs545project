@@ -37,6 +37,10 @@ public class OrderDetails {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     public double total() {
         return status != OrderStatus.CANCELED ? price * quantity : 0;
     }
