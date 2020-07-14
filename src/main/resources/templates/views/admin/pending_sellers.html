@@ -2,42 +2,48 @@
 <html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Pending sellers</title>
+  <meta charset="UTF-8">
+  <title>Pending sellers</title>
 </head>
 <body>
-<div id="contents" class="row" layout:fragment="main-content">
+<div id="contents" class="col" layout:fragment="main-content">
+  <div th:if="${seller_error}" class="alert alert-danger" th:text="${seller_error}"></div>
+  <div th:if="${message}" th:text="${message}" class="alert alert-success"></div>
+  <div id="product-container">
     <div class="d-flex flex-column mt-4 mb-4">
-        <div class="h4">Pending sellers</div>
-        <div class="mt-2" th:if="${pendingSellers == null || pendingSellers.isEmpty()}">
-            <span class="cus-text-light">There is no pending seller at the moment</span>
+      <div class="h4 col">Pending sellers</div>
+      <div class="d-flex flex-wrap mt-3 font-weight-bolder border-bottom mb-3 pb-3">
+        <div class="col-md-1">#</div>
+        <div class="col-md-4">Seller name</div>
+        <div class="col-md-4">Seller email</div>
+        <div class="col-md-3">Actions</div>
+      </div>
+      <div class="mt-2" th:if="${pendingSellers == null || pendingSellers.isEmpty()}">
+        <span class="cus-text-light">There is no pending seller at the moment</span>
+      </div>
+      <div class="d-flex flex-column" th:if="${pendingSellers != null && !pendingSellers.isEmpty()}">
+        <div th:each="seller, stat : ${pendingSellers}" class="d-flex flex-wrap order-item pb-2 pt-2 border-bottom">
+          <div class="col-md-1 d-flex flex-wrap align-items-center">
+            <span th:text="${stat.index + 1}"></span>
+          </div>
+          <div class="col-md-4 d-flex flex-wrap align-items-center">
+            <span th:text="${seller.fullName}"></span>
+          </div>
+          <div class="col-md-4 d-flex flex-wrap align-items-center">
+            <span th:text="${seller.email}"></span>
+          </div>
+          <div class="btn-group col-md-3 d-flex flex-nowrap align-items-center">
+            <a th:href="@{/admin/approve-seller/{id}(id=${seller.id})}"
+               class="border border-success text-success rounded w-50 text-center mr-1 text-decoration-none shadow">
+              Approve</a>
+            <a th:href="@{/admin/reject-seller/{id}(id=${seller.id})}"
+               class="border border-info text-danger rounded w-50 text-center text-decoration-none shadow">Reject</a>
+          </div>
         </div>
-        <table class="table table-responsive table-striped"
-               th:if="${pendingSellers != null && !pendingSellers.isEmpty()}">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Seller name</th>
-                <th scope="col">Seller email</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="seller,iter : ${pendingSellers}">
-                <th scope="row" th:text="${iter.index+1}">1</th>
-                <td th:text="${seller.fullName}"></td>
-                <td th:text="${seller.email}"></td>
-                <td>
-                    <div class="d-flex flex-row">
-                        <a th:href="@{/admin/approve-seller/{id}(id=${seller.id})}" class="btn shadow btn-success mr-1">
-                            Approve</a>
-                        <a th:href="@{/admin/reject-seller/{id}(id=${seller.id})}" class="btn shadow btn-danger">Reject</a>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+      </div>
     </div>
+  </div>
+</div>
 </div>
 </body>
 </html>

@@ -128,6 +128,4 @@ public class SellerController {
         String referer = request.getHeader("Referer");
         return "redirect:" + referer;
     }
-
-
 }

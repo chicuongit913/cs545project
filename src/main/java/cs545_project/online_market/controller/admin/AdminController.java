@@ -1,17 +1,16 @@
 package cs545_project.online_market.controller.admin;
 
+import cs545_project.online_market.service.ProductService;
 import cs545_project.online_market.service.ReviewService;
 import cs545_project.online_market.service.SellerService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,11 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 public class AdminController {
     private SellerService sellerService;
     private ReviewService reviewService;
+    private ProductService productService;
 
     @Autowired
-    public AdminController(SellerService sellerService, ReviewService reviewService) {
+    public AdminController(SellerService sellerService, ReviewService reviewService, ProductService productService) {
         this.sellerService = sellerService;
         this.reviewService = reviewService;
+        this.productService = productService;
     }
 
     @GetMapping("/pending-sellers")
@@ -64,6 +65,24 @@ public class AdminController {
     @GetMapping("/decline-review/{reviewId}")
     public String declineReview(@PathVariable("reviewId") long reviewId, HttpServletRequest request) throws NotFoundException {
         reviewService.declineReview(reviewId);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
+    }
+
+    @GetMapping("/products")
+    public String showAllProducts(Model model) {
+        model.addAttribute("products", productService.getAllUnUsedProducts());
+        return "views/admin/products-management";
+    }
+
+    @GetMapping(value = "/delete-product/{productId}")
+    public String deleteProduct(@PathVariable long productId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        try {
+            productService.deleteProductByAdmin(productId);
+            redirectAttributes.addFlashAttribute("message", "Product has been deleted successfully");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("product_error", ex.getMessage());
+        }
         String referer = request.getHeader("Referer");
         return "redirect:" + referer;
     }

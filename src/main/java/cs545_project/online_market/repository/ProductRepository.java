@@ -17,4 +17,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
     @Query("select p from Product p")
     List<Product> getAllProducts();
+
+    @Query("select p from Product p where p.isInUse = false")
+    List<Product> getAllUnUsedProducts();
 }
