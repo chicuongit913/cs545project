@@ -7,6 +7,7 @@ import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.CardResponse;
 import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.domain.BillingAddress;
+import cs545_project.online_market.domain.SellerStatus;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
@@ -117,6 +118,10 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         BeanUtils.copyProperties(userRequest, user);
+
+        if (UserRole.SELLER == userRole) {
+            user.setSellerStatus(SellerStatus.NEW);
+        }
 
         // Encode password string to BCryptPasswordEncoder
         user.setPassword(passwordEncoder.encode(user.getPassword()));

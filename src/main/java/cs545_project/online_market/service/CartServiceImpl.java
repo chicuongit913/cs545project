@@ -9,6 +9,8 @@ import cs545_project.online_market.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CartServiceImpl implements CartService {
 
@@ -43,7 +45,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Cart checkAndUpdateCart(String cartId, CartRequest cartRequest) {
-    	Cart cart = cartRepository.read(cartId);
+    	Cart cart = Optional.ofNullable(cartRepository.read(cartId)).orElseThrow(() -> new IllegalArgumentException(
+    	    "Invalid cart"));
         cartRequest.getItems()
             .stream()
             .forEach(item -> {

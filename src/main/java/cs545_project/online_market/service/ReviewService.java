@@ -9,8 +9,8 @@ import java.util.List;
 public interface ReviewService {
     List<ReviewResponse> getCreatedReviews();
 
-    void postReview(long reviewId) throws NotFoundException;
+    void postReview(long reviewId);
 
-    void declineReview(long reviewId) throws NotFoundException;
+    void declineReview(long reviewId);
 }
 

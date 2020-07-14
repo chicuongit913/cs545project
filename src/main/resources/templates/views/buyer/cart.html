@@ -76,15 +76,14 @@
         </div>
 
         <div class="text-right mt-5 mb-5">
-          <a th:href="@{/}"
-             class="btn btn-primary"> <span
+          <a th:href="@{/}" class="btn btn-primary shadow"> <span
               class="fa fa-home"></span> Continue shopping
           </a>
           <button type="submit" th:if="${cart.quantity}" th:formaction="@{/buyer/cart}"
-                  class="btn btn-secondary">
+                  class="btn btn-secondary shadow">
             <span class="fa fa-check"> Check Availability</span>
           </button>
-          <button type="submit" th:if="${cart.quantity}" class="btn btn-success">
+          <button type="submit" th:if="${cart.quantity}" class="btn btn-success shadow">
             <span class="fa fa-check"> Check out</span>
           </button>
         </div>

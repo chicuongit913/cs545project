@@ -51,12 +51,18 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void postReview(long reviewId) throws NotFoundException {
-
+    public void postReview(long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Review Id"));
+        review.setStatus(ReviewStatus.APPROVED);
+        reviewRepository.save(review);
     }
 
     @Override
-    public void declineReview(long reviewId) throws NotFoundException {
-
+    public void declineReview(long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Review Id"));
+        review.setStatus(ReviewStatus.REJECTED);
+        reviewRepository.save(review);
     }
 }
