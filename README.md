@@ -31,9 +31,11 @@
 ```
 
 ### 2. Deploy project
-```sh
-    java -jar path_to_project/build_file/online_market.jar
-```
+
+* Import to Intellij
+* Right click pom.xml and add maven project 
+* Right clik src/main/java/cs545_project/online_market/OnlineMarketApplication.java and Run the project  
+* Enjoy  
  
 ### 3. Access to project 
 ```sh
