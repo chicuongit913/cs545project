@@ -20,4 +20,6 @@ public interface ProductService {
     void deleteProduct(Long productId);
     void updateProduct(ProductRequest productRequest) throws IOException;
     ProductResponse postReview(Long id, ReviewRequest reviewRequest);
+    void deleteProductByAdmin(Long productId);
+    List<ProductResponse> getAllUnUsedProducts();
 }

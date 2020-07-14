@@ -1,59 +1,54 @@
-
 <!DOCTYPE html>
 <html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Pending reviews</title>
+  <meta charset="UTF-8">
+  <title>Pending reviews</title>
 </head>
 <body>
-<div id="contents" class="row" layout:fragment="main-content">
+<div id="contents" class="col" layout:fragment="main-content">
+  <div class="d-flex flex-column mt-4 mb-4">
     <div class="d-flex flex-column mt-4 mb-4">
-        <div class="h4">Pending reviews</div>
+      <div class="h4">Pending reviews</div>
+      <div class="d-flex flex-wrap mt-4 font-weight-bolder border-bottom mb-3 pb-3">
+        <div class="col-md-3">Product</div>
+        <div class="col-md-2">Reviewer</div>
+        <div class="col-md-2 text-nowrap">Created date</div>
+        <div class="col-md-3">Comment</div>
+        <div class="col-md-2">Actions</div>
+      </div>
+      <div class="d-flex flex-column">
         <div class="mt-2" th:if="${createdReviews == null || createdReviews.isEmpty()}">
-            <span class="cus-text-light">There is no pending review</span>
+          <span class="cus-text-light">There is no pending review</span>
         </div>
-        <table class="table table-responsive table-striped"
-               th:if="${createdReviews != null && !createdReviews.isEmpty()}">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Product</th>
-                <th scope="col">Reviewer</th>
-                <th scope="col" class="text-nowrap">Created date</th>
-                <th scope="col">Comment</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="review,iter : ${createdReviews}">
-                <td scope="row" th:text="${iter.index+1}">1</td>
-                </td>
-                <td>
-                    <div class="d-flex flex-row">
-                        <div class="col-md-2 pl-0">
-                            <img class="product-image w-100" th:src="${review.product.image}"/>
-                        </div>
-                        <div class="text-nowrap">
-                            <a th:text="${review.product.name}" th:href="@{/product/{id}(id=${review.product.id})}"
-                               th:target="blank"
-                            ></a>
-                        </div>
-                    </div>
-                </td>
-                <td th:text="${review.reviewer}"></td>
-                <td th:text="${review.createdDate}"></td>
-                <td th:text="${review.text}"></td>
-                <td>
-                    <div class="d-flex flex-row">
-                        <a th:href="@{/admin/post-review/{id}(id=${review.id})}" class="shadow btn btn-success mr-1">Post</a>
-                        <a th:href="@{/admin/decline-review/{id}(id=${review.id})}" class="shadow btn btn-danger">Decline</a>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div th:each="review : ${createdReviews}"
+             class="d-flex flex-wrap order-item pb-2 pt-2 border-bottom">
+          <div class="col-md-3 d-flex flex-wrap align-items-center">
+            <div>
+              <img class="product-image w-25" th:src="${review.product.image}"/>
+              <a th:href="@{/product/{id}(id=${review.product.id})}"
+                 th:text="${review.product.name}"></a>
+            </div>
+          </div>
+          <div class="col-md-2 d-flex flex-wrap align-items-center">
+            <span class="badge badge-light text-danger p-2 price-text" th:text="${review.reviewer}"></span>
+          </div>
+          <div class="col-md-2 d-flex flex-wrap align-items-center">
+            <span th:text="${review.createdDate}"></span>
+          </div>
+          <div class="col-md-3 d-flex flex-wrap align-items-center">
+            <span class="text-wrap" th:text="${review.text}"></span>
+          </div>
+          <div class="btn-group col-md-2 d-flex flex-wrap align-items-center">
+            <a th:href="@{/admin/post-review/{id}(id=${review.id})}"
+               class="border border-info text-success rounded w-75 text-center text-decoration-none shadow mr-1">Post</a>
+            <a th:href="@{/admin/decline-review/{id}(id=${review.id})}"
+               class="border border-info text-danger rounded w-75 text-center text-decoration-none shadow">Decline</a>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 </body>
 </html>

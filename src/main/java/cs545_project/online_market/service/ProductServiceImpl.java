@@ -91,10 +91,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
+    public void deleteProductByAdmin(Long productId) {
+       Optional.ofNullable(util.getCurrentUser())
+            .filter(u -> UserRole.ADMIN.equals(u.getRole()))
+            .orElseThrow(() -> new IllegalArgumentException("Only admin can delete this Product"));
         productRepository.findById(productId)
             .filter(p -> !p.isInUse())
+            .orElseThrow(() -> new IllegalArgumentException("This product already in used and cannot be deleted"));
+        productRepository.deleteById(productId);
+    }
+
+    @Override
+    public List<ProductResponse> getAllUnUsedProducts() {
+        return productRepository.getAllUnUsedProducts()
+            .stream()
+            .map(this::apply)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteProduct(Long productId) {
+        User seller = Optional.ofNullable(util.getCurrentUser())
+            .filter(u -> UserRole.SELLER.equals(u.getRole()))
+            .orElseThrow(() -> new IllegalArgumentException("Only Seller can update product"));
+        Product product = productRepository.findById(productId)
+            .filter(p -> !p.isInUse())
             .orElseThrow(() -> new IllegalArgumentException("This product cannot be deleted"));
+        Optional.ofNullable(product.getSeller())
+            .filter(s -> seller.equals(s))
+            .orElseThrow(() -> new IllegalArgumentException("This product does not belong to you"));
+
         productRepository.deleteById(productId);
     }
 
@@ -132,8 +158,8 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository
             .findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Invalid Product Id"));
-        User buyer = Optional.ofNullable(util.getCurrentUser()).orElseThrow(() -> new IllegalArgumentException(
-            "Only Buyer can post product review"));
+        User buyer = Optional.ofNullable(util.getCurrentUser())
+            .orElseThrow(() -> new IllegalArgumentException("Only Buyer can post product review"));
         Review review = new Review();
         review.setReviewer(buyer);
         review.setText(reviewRequest.getReview());
