@@ -4,14 +4,7 @@ import cs545_project.online_market.controller.request.OrderRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.OrderItemResponse;
 import cs545_project.online_market.controller.response.OrderResponse;
-import cs545_project.online_market.domain.BillingAddress;
-import cs545_project.online_market.domain.Cart;
-import cs545_project.online_market.domain.CartItem;
-import cs545_project.online_market.domain.Order;
-import cs545_project.online_market.domain.OrderDetails;
-import cs545_project.online_market.domain.OrderStatus;
-import cs545_project.online_market.domain.ShippingAddress;
-import cs545_project.online_market.domain.User;
+import cs545_project.online_market.domain.*;
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.repository.OrderDetailRepository;
 import cs545_project.online_market.repository.OrderRepository;
@@ -93,7 +86,11 @@ public class OrderServiceImpl implements OrderService {
         productRepository.saveAll(
             order.getOrderDetails()
                 .stream()
-                .map(OrderDetails::getProduct)
+                .map(orderItem -> {
+                    Product product = orderItem.getProduct();
+                    product.setInUse(true);
+                    return product;
+                })
                 .collect(Collectors.toList())); // Update Products Stock
 
         OrderResponse orderResponse = mapToOrderResponse(order);
