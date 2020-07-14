@@ -2,6 +2,7 @@ package cs545_project.online_market.controller;
 
 import cs545_project.online_market.controller.request.ReviewRequest;
 import cs545_project.online_market.controller.response.ProductResponse;
+import cs545_project.online_market.domain.User;
 import cs545_project.online_market.service.ProductService;
 import cs545_project.online_market.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,12 @@ public class ProductController {
 
     private ProductService productService;
 
-    @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, UserService userService) {
         this.productService = productService;
+        this.userService = userService;
     }
 
     @GetMapping("/{id}")
