@@ -1,5 +1,6 @@
 package cs545_project.online_market.controller.authentication;
 
+import cs545_project.online_market.controller.request.ClaimTokenRequest;
 import cs545_project.online_market.controller.request.UserRequest;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
@@ -20,6 +21,12 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+
+    @PostMapping("/claim-token")
+    @ResponseBody
+    public String claimToken(@RequestBody @Valid ClaimTokenRequest claimTokenRequest) {
+        return "success";
+    }
 
     @GetMapping(value = "/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,

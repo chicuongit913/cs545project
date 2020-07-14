@@ -13,14 +13,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-
 import java.io.File;
 import java.util.Locale;
 
 @Configuration
 public class MyWebMvcConfigurer implements WebMvcConfigurer {
-
-    //IMPORTANT TO UN-COMMENT : If we need to message and locale for validation and message we can un-comment
 
     @Bean
     public LocaleResolver localeResolver() {

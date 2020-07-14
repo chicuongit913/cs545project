@@ -2,6 +2,7 @@ package cs545_project.online_market.config;
 
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Data
 public class JPAUserDetails implements UserDetails {
 
     private String username;
