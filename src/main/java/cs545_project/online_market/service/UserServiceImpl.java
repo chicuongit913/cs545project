@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserFollowSeller(User seller) {
         User user = util.getCurrentUser();
-        return user != null || user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
+        return user != null && user.getFollowingSellers().stream().anyMatch(u -> u.equals(seller));
     }
 
     @Override
