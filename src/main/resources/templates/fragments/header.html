@@ -61,6 +61,7 @@
 
                     <div th:if="${user_name} and ${user_role} == 'SELLER'" class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/seller"><i class="fa fa-user mr-1"></i>Product Management</a>
+                        <a class="dropdown-item" href="/seller/orders"><i class="fa fa-user mr-1"></i>Order Management</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" th:href="@{/perform_logout}"><i class="fa fa-sign-out"></i> Logout</a>
                     </div>

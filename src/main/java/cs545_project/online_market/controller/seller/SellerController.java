@@ -1,9 +1,11 @@
 package cs545_project.online_market.controller.seller;
 
 import cs545_project.online_market.controller.request.ProductRequest;
+import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.domain.Product;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.helper.Util;
+import cs545_project.online_market.service.OrderService;
 import cs545_project.online_market.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -11,11 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,11 +32,13 @@ public class SellerController {
 
     private Util util;
     private ProductService productService;
+    private OrderService orderService;
 
     @Autowired
-    public SellerController(Util util, ProductService productService) {
+    public SellerController(Util util, ProductService productService, OrderService orderService) {
         this.util = util;
         this.productService = productService;
+        this.orderService = orderService;
     }
 
     @GetMapping
@@ -133,5 +133,22 @@ public class SellerController {
         model.addAttribute("sellerProducts", products);
         return "views/seller/SellerHome";
     }
+
+    @GetMapping("/orders")
+    public String createdOrders(Model model) {
+        model.addAttribute("OrderItemsResponse", orderService.getCreatedOrders());
+        return "views/seller/created_orders";
+    }
+
+    @GetMapping("/orders/update_status")
+    public String updateStatusForOrder(@RequestParam("id") Long id,
+                                       @RequestParam("status") OrderStatus status,
+                                       Model model,
+                                       HttpServletRequest request) {
+        this.orderService.updateStatusOrderBySeller(id, status);
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
+    }
+
 
 }

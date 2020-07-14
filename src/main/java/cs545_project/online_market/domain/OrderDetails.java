@@ -1,10 +1,13 @@
 package cs545_project.online_market.domain;
 
+import com.sun.org.apache.bcel.internal.generic.LOR;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity

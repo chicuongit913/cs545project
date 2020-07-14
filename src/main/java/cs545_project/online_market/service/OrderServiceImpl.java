@@ -13,6 +13,7 @@ import cs545_project.online_market.domain.OrderStatus;
 import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.helper.Util;
+import cs545_project.online_market.repository.OrderDetailRepository;
 import cs545_project.online_market.repository.OrderRepository;
 import cs545_project.online_market.repository.ProductRepository;
 import cs545_project.online_market.repository.UserRepository;
@@ -41,15 +42,18 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     private Util util;
     private EmailService emailService;
+    private OrderDetailRepository orderDetailRepository;
 
     @Autowired
     public OrderServiceImpl(UserRepository userRepository, ProductRepository productRepository,
-                            OrderRepository orderRepository, Util util, EmailService emailService) {
+                            OrderRepository orderRepository, Util util, EmailService emailService,
+                            OrderDetailRepository orderDetailRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.util = util;
         this.emailService = emailService;
+        this.orderDetailRepository = orderDetailRepository;
     }
 
     @Override
@@ -234,5 +238,26 @@ public class OrderServiceImpl implements OrderService {
         context.setVariable("lastFourDigitsCard", lastFourDigits);
 
         return templateEngine.process("/templates/views/buyer/invoiceOrder", context);
+    }
+
+    @Override
+    public List<OrderItemResponse> getCreatedOrders(){
+        List<OrderDetails> orderDetails = this.orderDetailRepository.getOrderDetailCreated(util.getCurrentUser().getId());
+        return orderDetails
+                .stream()
+                .map(this::mapToOrderItemResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateStatusOrderBySeller(Long orderDetailId, OrderStatus status) {
+        OrderDetails orderDetail =
+                this.orderDetailRepository.findById(orderDetailId).isPresent()?
+                        this.orderDetailRepository.findById(orderDetailId).get():null;
+
+        if(orderDetail != null && orderDetail.getProduct().getSeller().equals(util.getCurrentUser())) {
+            orderDetail.setStatus(status);
+            this.orderDetailRepository.save(orderDetail);
+        }
     }
 }

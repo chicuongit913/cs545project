@@ -37,6 +37,8 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers("/buyer/rest/cart/add/**").permitAll()
             .antMatchers("/buyer/**").hasRole("BUYER")
+            .antMatchers("/seller/**").hasRole("SELLER")
+            .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/**").permitAll()
                 .and()
                 .formLogin()

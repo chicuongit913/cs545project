@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layouts/main}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Management</title>
+</head>
+<body>
+<!--<th:block layout:fragment="page-custom-js">-->
+<!--    <script type="text/javascript" th:src="@{/js/admin.js}"></script>-->
+<!--</th:block>-->
+<div id="contents" class="row" layout:fragment="main-content">
+    <div class="d-flex flex-column mt-4 mb-4">
+        <div class="h4">Order Management</div>
+        <div class="mt-2" th:if="${OrderItemsResponse == null || OrderItemsResponse.isEmpty()}">
+            <span class="cus-text-light">There is no order</span>
+        </div>
+
+        <div class="d-flex flex-wrap mt-5 font-weight-bolder border-bottom mb-3 pb-3">
+            <div class="col-md-1">Image</div>
+            <div class="col-md-5">Product Name</div>
+            <div class="col-md-2">Quantity</div>
+            <div class="col-md-2">Price</div>
+            <div class="col-md-2">Status</div>
+        </div>
+
+        <div class="d-flex flex-column">
+            <div th:each="item : ${OrderItemsResponse}" class="d-flex flex-wrap order-item pb-2 pt-2 border-bottom">
+                <div class="col-md-1">
+                    <img class="img-thumbnail" th:src="${item.image}">
+                </div>
+                <div class="col-md-5 d-flex flex-wrap align-items-center">
+                    <div>
+                        <a th:href="@{/product/{id}(id=${item.productId})}" th:text="${item.productName}"></a>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex flex-wrap align-items-center">
+                    <span class="badge badge-light text-danger p-2" th:text="${item.quantity}"></span>
+                </div>
+                <div class="col-md-2 d-flex flex-wrap align-items-center">
+                    <span class="badge badge-light text-danger p-2 price-text" th:text="'$'+${item.price}"></span>
+                </div>
+
+                <div class="btn-group col-md-2 d-flex flex-wrap align-items-center">
+                    <a type="button"
+                            th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                            class="border border-primary text-primary rounded w-75 text-center dropdown-toggle" th:text="${item.status}"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <Action></Action>
+                    </a>
+                    <a
+                            th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).CANCELED}"
+                            class="border border-danger text-danger rounded w-75 text-center" th:text="${item.status}">
+                        Action
+                    </a>
+                    <a type="button"
+                       th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).DELIVERED}"
+                            class="border border-success text-success rounded w-75 text-center" th:text="${item.status}">
+                        Action
+                    </a>
+                    <a type="button"
+                            th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).DELIVERING}
+                                or ${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).SHIPPED}"
+                            class="border border-info text-info rounded w-75 text-center dropdown-toggle" th:text="${item.status}"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Action
+                    </a>
+                    <div class="dropdown-menu">
+                        <a th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                           class="dropdown-item ml-4 mb-1 border border-danger text-danger rounded w-75 text-center"
+                           th:href="@{/seller/orders/update_status(id = ${item.id},
+                           status = ${T(cs545_project.online_market.domain.OrderStatus).CANCELED})}">CANCELED</a>
+
+                        <a th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).NEW}"
+                           class="dropdown-item ml-4 mb-1 border border-info text-info rounded w-75 text-center"
+                           th:href="@{/seller/orders/update_status(id = ${item.id},
+                           status = ${T(cs545_project.online_market.domain.OrderStatus).SHIPPED})}">SHIPPED</a>
+
+                        <a th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).SHIPPED}"
+                           class="dropdown-item ml-4 mb-1 border border-info text-info rounded w-75 text-center"
+                           th:href="@{/seller/orders/update_status(id = ${item.id},
+                           status = ${T(cs545_project.online_market.domain.OrderStatus).DELIVERING})}">DELIVERING</a>
+
+                        <a  th:if="${item.status} == ${T(cs545_project.online_market.domain.OrderStatus).DELIVERING}"
+                            class="dropdown-item ml-4 mb-1 border border-success text-success rounded w-75 text-center"
+                            th:href="@{/seller/orders/update_status(id = ${item.id},
+                           status = ${T(cs545_project.online_market.domain.OrderStatus).DELIVERED})}">DELIVERED</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
