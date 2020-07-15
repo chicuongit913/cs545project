@@ -22,7 +22,15 @@
 | Hibernate | 5.4.17.Final | 
 | Java Functional Programming with Stream, Optional | 8 |
 | H2 DB | 1.4.200 | 
+| Maven | 3.6.3 |
 
+## Requirements 
+Before you get started, the following needs to be installed on your machine:
+
+* Git
+* Maven 3.6.3
+* Java 8
+* IDE such as (Intellij, Eclipse, ...) to enjoy coding ## Optional
 
 ## How to installation project
 ### 1. Pull project package
@@ -31,11 +39,19 @@
 ```
 
 ### 2. Deploy project
-
+#### 2.1 Deploy using IDE such as Intellij
 * Import to Intellij
 * Right click pom.xml and add maven project 
 * Right clik src/main/java/cs545_project/online_market/OnlineMarketApplication.java and Run the project  
 * Enjoy  
+ 
+#### 2.2 Deploy using command line
+* Travel to the project folder  
+`cd [project location]` 
+* Using Maven to package the project into standalone Jar file   
+`mvn package` 
+* Run project using java -jar command   
+`java -jar target/online_market-0.0.1-SNAPSHOT.jar` 
  
 ### 3. Access to project 
 ```sh
