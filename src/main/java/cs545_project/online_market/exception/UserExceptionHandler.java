@@ -13,7 +13,7 @@ public class UserExceptionHandler {
                                                                                       AddressNotFoundException exception) {
         ModelAndView mav = new ModelAndView();
         mav.addObject("msg", exception.getMessage());
-        mav.setViewName("/views/buyer/userNotFound");
+        mav.setViewName("views/buyer/userNotFound");
         return mav;
     }
 }

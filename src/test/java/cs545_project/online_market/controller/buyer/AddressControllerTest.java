@@ -72,14 +72,14 @@ public class AddressControllerTest {
     @Test
     public void getCreateBillingAddress() {
         String viewName = addressController.getCreateAddress(new AddressRequest(), "billing", model);
-        assertEquals("/views/buyer/address", viewName);
+        assertEquals("views/buyer/address", viewName);
         verify(model, times(1)).addAttribute(eq("type"), eq("billing"));
     }
 
     @Test
     public void getCreateShippingAddress() {
         String viewName = addressController.getCreateAddress(new AddressRequest(), "shipping", model);
-        assertEquals("/views/buyer/address", viewName);
+        assertEquals("views/buyer/address", viewName);
         verify(model, times(1)).addAttribute(eq("type"), eq("shipping"));
     }
 }

@@ -44,20 +44,20 @@ public class AuthenticationController {
             errorMessge = "You have been successfully logged out !!";
         }
         model.addAttribute("errorMessge", errorMessge);
-        return "/views/authentication/login";
+        return "views/authentication/login";
     }
 
     @GetMapping(value = "/seller_register")
     public String getSellerRegister(@ModelAttribute("userRequest") UserRequest userRequest, BindingResult bindingResult, Model model){
         model.addAttribute("create_user_role", UserRole.SELLER.getName());
-        return "/views/authentication/userRegisterForm";
+        return "views/authentication/userRegisterForm";
     }
 
     @PostMapping(value = "/seller_register")
     public String postSellerRegister(@Valid @ModelAttribute("userRequest") UserRequest userRequest,
                                      BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors())
-            return "/views/authentication/userRegisterForm";
+            return "views/authentication/userRegisterForm";
 
         User user = this.userService.createSeller(userRequest);
 
@@ -70,14 +70,14 @@ public class AuthenticationController {
     @GetMapping(value = "/buyer_register")
     public String getBuyerRegister(@ModelAttribute("userRequest") UserRequest userRequest, BindingResult bindingResult, Model model){
         model.addAttribute("create_user_role", UserRole.BUYER.getName());
-        return "/views/authentication/userRegisterForm";
+        return "views/authentication/userRegisterForm";
     }
 
     @PostMapping(value = "/buyer_register")
     public String postBuyerRegister(@Valid @ModelAttribute("userRequest") UserRequest userRequest,
                                      BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors())
-            return "/views/authentication/userRegisterForm";
+            return "views/authentication/userRegisterForm";
 
         User user = this.userService.createBuyer(userRequest);
 
@@ -88,11 +88,11 @@ public class AuthenticationController {
 
     @GetMapping("/success_register")
     public String getSuccessRegister(){
-        return "/views/authentication/successRegister";
+        return "views/authentication/successRegister";
     }
 
     @GetMapping("/denied")
     public String accessDenied(){
-        return "/views/authentication/accessDenied";
+        return "views/authentication/accessDenied";
     }
 }

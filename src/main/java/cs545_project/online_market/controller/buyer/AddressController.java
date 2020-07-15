@@ -31,7 +31,7 @@ public class AddressController {
     public String getCreateAddress(@ModelAttribute("addressRequest") AddressRequest addressRequest,
                                 @RequestParam("type") String type, Model model){
         model.addAttribute("type", type);
-        return "/views/buyer/address";
+        return "views/buyer/address";
     }
 
     @PostMapping("/create")
@@ -42,7 +42,7 @@ public class AddressController {
         model.addAttribute("type", type);
 
         if(bindingResult.hasErrors())
-            return "/views/buyer/address";
+            return "views/buyer/address";
 
         this.addressService.createOrUpdate(addressRequest, type, util.getCurrentUser());
         redirectAttributes.addFlashAttribute("successMessage", "Address is created!");
@@ -65,7 +65,7 @@ public class AddressController {
         BeanUtils.copyProperties(address,addressRequest);
         model.addAttribute("addressRequest", addressRequest);
 
-        return "/views/buyer/address";
+        return "views/buyer/address";
     }
 
     @PostMapping("/edit/{id}")
@@ -74,7 +74,7 @@ public class AddressController {
                                   RedirectAttributes redirectAttributes){
 
         if(bindingResult.hasErrors())
-            return "/views/buyer/address";
+            return "views/buyer/address";
 
         Address address = this.addressService.findById(id);
 

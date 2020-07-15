@@ -1,15 +1,15 @@
 package cs545_project.online_market.controller.buyer;
 
 import com.lowagie.text.DocumentException;
-import cs545_project.online_market.controller.request.ReviewRequest;
-import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.controller.request.CartRequest;
 import cs545_project.online_market.controller.request.OrderRequest;
+import cs545_project.online_market.controller.request.ReviewRequest;
 import cs545_project.online_market.controller.response.AddressResponse;
 import cs545_project.online_market.controller.response.CardResponse;
 import cs545_project.online_market.controller.response.CheckoutUserResponse;
 import cs545_project.online_market.controller.response.OrderResponse;
 import cs545_project.online_market.domain.Cart;
+import cs545_project.online_market.domain.Order;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.domain.UserRole;
 import cs545_project.online_market.exception.UserNotFoundException;
@@ -27,13 +27,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Optional;
 
 @Controller
@@ -81,7 +89,7 @@ public class BuyerController {
         }
         model.addAttribute("cart", cart);
 
-        return "/views/buyer/cart";
+        return "views/buyer/cart";
     }
 
     @PostMapping("/cart")
@@ -97,7 +105,7 @@ public class BuyerController {
         }
 
         model.addAttribute("cart", cart);
-        return "/views/buyer/cart";
+        return "views/buyer/cart";
     }
 
     @PostMapping("/cart/checkout")
@@ -108,7 +116,7 @@ public class BuyerController {
         } catch (IllegalArgumentException ex) {
             model.addAttribute("cart_errors", ex.getMessage());
             model.addAttribute("cart", cartService.read(cartId));
-            return "/views/buyer/cart";
+            return "views/buyer/cart";
         }
 
         setupCheckoutData(orderRequest, model);
@@ -152,7 +160,7 @@ public class BuyerController {
     @GetMapping("/orders")
     public String viewOrders(HttpServletRequest request, Model model) {
         model.addAttribute("orders", orderService.getOrdersOfCurrentUser());
-        return "/views/buyer/orders";
+        return "views/buyer/orders";
     }
 
     @GetMapping("/follow_seller/{id}")
@@ -183,7 +191,7 @@ public class BuyerController {
 
     @GetMapping("/orders/cancel")
     public String cancelOrder(@RequestParam("order_id") Long orderId, @RequestParam("item_id") Long itemId
-            , Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        , Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         Order order = orderService.findById(orderId);
 
@@ -203,19 +211,9 @@ public class BuyerController {
     @GetMapping("/orders/print/{id}")
     public ResponseEntity<InputStreamResource> printInvoiceOrder(@PathVariable("id") long id, Model model, HttpServletRequest request) throws IOException, DocumentException {
         Order order = orderService.findById(id);
-
-//        if (order == null) {
-//            return "redirect:/buyer/orders";
-//        }
-//
-//        if(!order.getBuyer().equals(util.getCurrentUser()))
-//            return "redirect:/auth/denied";
-
         String htmlOder = this.orderService.generateInvoiceOrder(order);
-
         String outputFolder = "invoice" + id + ".pdf";
         OutputStream outputStream = new FileOutputStream(outputFolder);
-
         ITextRenderer renderer = new ITextRenderer();
         renderer.setDocumentFromString(htmlOder);
         renderer.layout();
@@ -229,26 +227,9 @@ public class BuyerController {
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(resource);
+            .ok()
+            .headers(headers)
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(resource);
     }
-
-//    @GetMapping("/orders/confirm_purchase_order/{id}")
-//    public String confirmPurchaseOrder(@PathVariable("id") long id, Model model, HttpServletRequest request)
-//            throws IOException, DocumentException {
-//        Order order = orderService.findById(id);
-//        OrderResponse orderResponse = orderService.mapToOrderResponse(order);
-//
-//        model.addAttribute("orderResponse", orderResponse);
-//
-//        String carNumber = order.getCard().getCardNumber();
-//        String lastFourDigits = carNumber.substring(carNumber.length() - 4);
-//        model.addAttribute("lastFourDigitsCard", lastFourDigits);
-//
-////        this.emailService.sendConfirmPurchaseMessage(order);
-//
-//        return "/views/buyer/confirmPurchaseOrder";
-//    }
 }

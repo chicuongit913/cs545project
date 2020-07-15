@@ -236,6 +236,7 @@ public class OrderServiceImpl implements OrderService {
         context.setVariable("lastFourDigitsCard", lastFourDigits);
 
         return templateEngine.process("/templates/views/buyer/invoiceOrder", context);
+        //return templateEngine.process("views/buyer/invoiceOrder", context);
     }
 
     @Override

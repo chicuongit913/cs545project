@@ -40,6 +40,7 @@ public class EmailServiceImpl implements EmailService{
         String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
         context.setVariable("lastFourDigitsCard", lastFourDigits);
 
+        //String body =  templateEngine.process("views/buyer/confirmPurchaseOrder", context);
         String body =  templateEngine.process("/templates/views/buyer/confirmPurchaseOrder", context);
         String subject = "Purchase confirm for Order #" + orderResponse.hashCode();
 

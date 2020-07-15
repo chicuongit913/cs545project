@@ -1,7 +1,5 @@
 package cs545_project.online_market.controller.buyer;
 
-import cs545_project.online_market.domain.BillingAddress;
-import cs545_project.online_market.domain.ShippingAddress;
 import cs545_project.online_market.domain.User;
 import cs545_project.online_market.helper.Util;
 import cs545_project.online_market.service.AddressService;
@@ -25,6 +23,6 @@ public class SettingController {
     public String getSetting(Model model){
         User user = util.getCurrentUser();
         model.addAttribute("user", user);
-        return "/views/buyer/setting";
+        return "views/buyer/setting";
     }
 }

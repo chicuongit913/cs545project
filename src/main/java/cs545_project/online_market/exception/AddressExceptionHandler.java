@@ -12,7 +12,7 @@ public class AddressExceptionHandler {
                                                                                       AddressNotFoundException exception) {
         ModelAndView mav = new ModelAndView();
         mav.addObject("msg", exception.getMessage());
-        mav.setViewName("/views/buyer/addressNotFound");
+        mav.setViewName("views/buyer/addressNotFound");
         return mav;
     }
 }
